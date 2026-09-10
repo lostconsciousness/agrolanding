@@ -231,12 +231,16 @@ export default function Home() {
           <div className="hero-backdrop absolute inset-0" />
           <div className="hero-shade absolute inset-0" />
           <div className="field-grid absolute inset-x-0 bottom-0 h-[72%]" />
-          <div className="tractor-entry"><img src="/hero-tractor-v2.webp" alt="" width="1300" height="650" fetchPriority="high" decoding="async" /></div>
-          <div className="scan-cone"><span className="scan-plane" /><span className="scan-ray ray-one" /><span className="scan-ray ray-two" /><span className="scan-ray ray-three" /></div>
-          <div className="scan-target"><span /><span /><span /></div>
-          <div className="drone-entry"><img className="hero-drone" src="/hero-drone-v2.webp" alt="" width="720" height="480" fetchPriority="high" decoding="async" /></div>
+          <div className="hero-artboard">
+            <div className="tractor-entry"><img src="/hero-tractor-v2.webp" alt="" width="1300" height="650" fetchPriority="high" decoding="async" /></div>
+            <div className="scan-cone"><span className="scan-plane" /><span className="scan-ray ray-one" /><span className="scan-ray ray-two" /><span className="scan-ray ray-three" /></div>
+            <div className="scan-target"><span /><span /><span /></div>
+            <div className="drone-entry"><img className="hero-drone" src="/hero-drone-v2.webp" alt="" width="720" height="480" fetchPriority="high" decoding="async" /></div>
+            <div className="hero-signal signal-one"><span>NDVI</span><strong>0.84</strong><small>+12%</small></div>
+            <div className="hero-signal signal-two"><span>Yield forecast</span><strong>6.8 t/ha</strong><svg viewBox="0 0 120 30"><path d="M2 25 C20 24 30 18 42 20 S64 14 74 16 S95 3 118 6" /></svg></div>
+          </div>
         </div>
-        <div className="relative z-10 mx-auto flex min-h-[920px] max-w-[1440px] items-center px-5 pb-36 pt-36 lg:px-10">
+        <div className="hero-stage relative z-10 mx-auto flex min-h-[920px] max-w-[1440px] items-center px-5 pb-36 pt-36 lg:px-10">
           <div className="hero-copy-block max-w-[830px]">
             <div className="hero-badge"><Radar size={15} /> {t.badge}</div>
             <h1 className="hero-title">{t.heroA}<br /><span>{t.heroB}</span></h1>
@@ -247,8 +251,6 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <div className="hero-signal signal-one"><span>NDVI</span><strong>0.84</strong><small>+12%</small></div>
-        <div className="hero-signal signal-two"><span>Yield forecast</span><strong>6.8 t/ha</strong><svg viewBox="0 0 120 30"><path d="M2 25 C20 24 30 18 42 20 S64 14 74 16 S95 3 118 6" /></svg></div>
         <div className="scroll-cue">{t.scroll}<span /></div>
       </section>
 
