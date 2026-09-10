@@ -17,6 +17,7 @@ import {
   Map,
   Menu,
   Play,
+  Plus,
   Radar,
   Route,
   Satellite,
@@ -29,7 +30,7 @@ import {
   X,
   Zap,
 } from 'lucide-react';
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 
 type Locale = 'uk' | 'en' | 'pl' | 'kk' | 'de';
 
@@ -156,17 +157,7 @@ const featureIcons = [Globe2, Banknote, Tractor, Users, Sparkles, FileCheck2];
 const fleetIcons = [Route, Fuel, BarChart3, Zap];
 
 function Reveal({ children, className = '', direction = 'up', delay = 0 }: { children: ReactNode; className?: string; direction?: 'up' | 'left' | 'right'; delay?: number }) {
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const node = ref.current;
-    if (!node) return;
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) { node.classList.add('is-visible'); observer.unobserve(node); }
-    }, { threshold: 0.14 });
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, []);
-  return <div ref={ref} className={`reveal reveal-${direction} ${className}`} style={{ transitionDelay: `${delay}ms` }}>{children}</div>;
+  return <div className={`reveal reveal-${direction} ${className}`} style={{ transitionDelay: `${delay}ms` }}>{children}</div>;
 }
 
 function Kicker({ children }: { children: ReactNode }) {
@@ -192,19 +183,20 @@ export default function Home() {
   }, [locale]);
 
   useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    let frame = 0;
-    const update = () => {
-      frame = 0;
-      document.querySelectorAll<HTMLElement>('[data-parallax]').forEach((el) => {
-        const rect = el.getBoundingClientRect();
-        const speed = Number(el.dataset.parallax || 0.05);
-        el.style.setProperty('--parallax-y', `${(window.innerHeight * 0.5 - rect.top) * speed}px`);
+    const targets = document.querySelectorAll<HTMLElement>('.reveal, [data-scene]');
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      targets.forEach((target) => target.classList.add('is-visible'));
+      return;
+    }
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
       });
-    };
-    const onScroll = () => { if (!frame) frame = window.requestAnimationFrame(update); };
-    update(); window.addEventListener('scroll', onScroll, { passive: true });
-    return () => { window.removeEventListener('scroll', onScroll); if (frame) cancelAnimationFrame(frame); };
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+    targets.forEach((target) => observer.observe(target));
+    return () => observer.disconnect();
   }, []);
 
   const changeLocale = (value: string) => setLocale(value as Locale);
@@ -235,12 +227,17 @@ export default function Home() {
       </header>
 
       <section id="top" className="hero-section relative min-h-[920px] overflow-hidden">
-        <div className="hero-image absolute inset-0" data-parallax="0.035" />
-        <div className="hero-shade absolute inset-0" />
-        <div className="field-grid absolute inset-x-0 bottom-0 h-[72%]" />
-        <div className="scan-beam" />
+        <div className="hero-scene absolute inset-0" aria-hidden="true">
+          <div className="hero-backdrop absolute inset-0" />
+          <div className="hero-shade absolute inset-0" />
+          <div className="field-grid absolute inset-x-0 bottom-0 h-[72%]" />
+          <div className="tractor-entry"><img src="/hero-tractor-v2.webp" alt="" width="1300" height="650" fetchPriority="high" decoding="async" /></div>
+          <div className="scan-cone"><span className="scan-plane" /><span className="scan-ray ray-one" /><span className="scan-ray ray-two" /><span className="scan-ray ray-three" /></div>
+          <div className="scan-target"><span /><span /><span /></div>
+          <div className="drone-entry"><img className="hero-drone" src="/hero-drone-v2.webp" alt="" width="720" height="480" fetchPriority="high" decoding="async" /></div>
+        </div>
         <div className="relative z-10 mx-auto flex min-h-[920px] max-w-[1440px] items-center px-5 pb-36 pt-36 lg:px-10">
-          <div className="max-w-[830px]">
+          <div className="hero-copy-block max-w-[830px]">
             <div className="hero-badge"><Radar size={15} /> {t.badge}</div>
             <h1 className="hero-title">{t.heroA}<br /><span>{t.heroB}</span></h1>
             <p className="hero-copy">{t.heroText}</p>
@@ -282,15 +279,16 @@ export default function Home() {
 
       <section className="ticker" aria-hidden="true"><div>{['EU BUYERS', 'FIELD DATA', 'MACHINERY', 'FINANCING', 'GRANTS', 'TEAM CONTROL', 'EU BUYERS', 'FIELD DATA', 'MACHINERY', 'FINANCING'].map((word, i) => <span key={`${word}-${i}`}>{word}<Sprout /></span>)}</div></section>
 
-      <section className="section-shell media-section py-36 md:py-52">
-        <div className="media-visual media-buyers" data-parallax="0.055"><div className="visual-overlay" /><div className="map-orbit orbit-a" /><div className="map-orbit orbit-b" /><span className="map-node n1" /><span className="map-node n2" /><span className="map-node n3" /></div>
+      <section className="section-shell media-section py-36 md:py-52" data-scene>
+        <div className="media-visual media-buyers scene-visual" aria-hidden="true"><picture><source media="(max-width: 699px)" srcSet="/buyers-eu-mobile-v2.webp" /><img src="/buyers-eu-v2.webp" alt="" width="1200" height="800" loading="lazy" decoding="async" /></picture><div className="visual-overlay" /><div className="map-orbit orbit-a" /><div className="map-orbit orbit-b" /><span className="map-node n1" /><span className="map-node n2" /><span className="map-node n3" /></div>
         <div className="relative z-10 grid gap-12 lg:grid-cols-[1fr_.85fr] lg:items-center">
           <Reveal direction="left"><Kicker>{t.buyersKicker}</Kicker><h2 className="section-title max-w-3xl">{t.buyersTitle}</h2><p className="section-copy max-w-2xl">{t.buyersText}</p><div className="check-grid">{t.buyerPoints.map((point) => <div key={point}><Check size={16} />{point}</div>)}</div></Reveal>
           <Reveal direction="right" delay={100}><div className="calc-card"><div className="calc-head"><CircleDollarSign />{t.calcLabel}</div>{t.calcRows.map(([label, value], i) => <div className={`calc-row ${i === 2 ? 'total' : ''}`} key={label}><span>{label}</span><strong>{value}</strong></div>)}<p>{t.calcNote}</p></div></Reveal>
         </div>
       </section>
 
-      <section className="finance-section relative overflow-hidden py-36 md:py-52">
+      <section className="finance-section relative overflow-hidden py-36 md:py-52" data-scene>
+        <div className="finance-media scene-visual" aria-hidden="true"><picture><source media="(max-width: 699px)" srcSet="/finance-mobile-v2.webp" /><img src="/finance-v2.webp" alt="" width="1200" height="800" loading="lazy" decoding="async" /></picture><div className="finance-image-shade" /></div>
         <div className="finance-glow" />
         <div className="section-shell relative z-10">
           <Reveal><Kicker>{t.financeKicker}</Kicker><h2 className="section-title max-w-4xl">{t.financeTitle}</h2><p className="section-copy max-w-2xl">{t.financeText}</p></Reveal>
@@ -299,8 +297,8 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="fleet-section relative min-h-[900px] overflow-hidden py-36 md:py-52">
-        <div className="fleet-image absolute inset-0" data-parallax="0.045" />
+      <section className="fleet-section relative min-h-[900px] overflow-hidden py-36 md:py-52" data-scene>
+        <div className="fleet-image scene-visual absolute inset-0" aria-hidden="true"><picture><source media="(max-width: 699px)" srcSet="/fleet-mobile-v2.webp" /><img src="/fleet-v2.webp" alt="" width="1600" height="900" loading="lazy" decoding="async" /></picture></div>
         <div className="fleet-shade absolute inset-0" />
         <div className="section-shell relative z-10">
           <Reveal direction="left"><Kicker>{t.fleetKicker}</Kicker><h2 className="section-title max-w-4xl">{t.fleetTitle}</h2><p className="section-copy max-w-2xl">{t.fleetText}</p></Reveal>
@@ -324,7 +322,7 @@ export default function Home() {
       <section className="section-shell py-36 md:py-52">
         <div className="grid gap-14 lg:grid-cols-[.8fr_1.2fr]">
           <Reveal direction="left"><Kicker>{t.faqKicker}</Kicker><h2 className="section-title">{t.faqTitle}</h2></Reveal>
-          <div className="faq-list">{t.faqs.map(([question, answer], i) => <Reveal key={question} delay={i * 60}><article className={openFaq === i ? 'open' : ''}><button onClick={() => setOpenFaq(openFaq === i ? -1 : i)} aria-expanded={openFaq === i}><span>{question}</span><span className="faq-plus">+</span></button><div className="faq-answer"><p>{answer}</p></div></article></Reveal>)}</div>
+          <div className="faq-list">{t.faqs.map(([question, answer], i) => <Reveal key={question} delay={i * 60}><article className={openFaq === i ? 'open' : ''}><button onClick={() => setOpenFaq(openFaq === i ? -1 : i)} aria-expanded={openFaq === i}><span>{question}</span><span className="faq-plus" aria-hidden="true"><Plus /></span></button><div className="faq-answer"><p>{answer}</p></div></article></Reveal>)}</div>
         </div>
       </section>
 
