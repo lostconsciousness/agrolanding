@@ -234,8 +234,10 @@ export default function Home() {
           <div className="field-grid absolute inset-x-0 bottom-0 h-[72%]" />
           <div className="hero-artboard">
             <div className="tractor-entry"><img src="/hero-tractor-v2.webp" alt="" width="1300" height="650" fetchPriority="high" decoding="async" /></div>
-            <div className="scan-cone"><span className="scan-plane" /><span className="scan-ray ray-one" /><span className="scan-ray ray-two" /><span className="scan-ray ray-three" /></div>
-            <div className="scan-target"><span /><span /><span /></div>
+            <div className="scan-system">
+              <div className="scan-cone"><span className="scan-plane" /><span className="scan-ray ray-one" /><span className="scan-ray ray-two" /><span className="scan-ray ray-three" /></div>
+              <div className="scan-target"><span /><span /><span /></div>
+            </div>
             <div className="drone-entry"><img className="hero-drone" src="/hero-drone-v2.webp" alt="" width="720" height="480" fetchPriority="high" decoding="async" /></div>
             <div className="hero-signal signal-one"><span>NDVI</span><strong>0.84</strong><small>+12%</small></div>
             <div className="hero-signal signal-two"><span>Yield forecast</span><strong>6.8 t/ha</strong><svg viewBox="0 0 120 30"><path d="M2 25 C20 24 30 18 42 20 S64 14 74 16 S95 3 118 6" /></svg></div>
