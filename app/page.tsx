@@ -161,7 +161,7 @@ function Reveal({ children, className = '', direction = 'up', delay = 0 }: { chi
 }
 
 function Kicker({ children }: { children: ReactNode }) {
-  return <div className="mb-5 flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[.22em] text-[#b8ee37]"><span className="h-px w-8 bg-[#b8ee37]" />{children}</div>;
+  return <div className="section-kicker mb-5 flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[.22em] text-[#b8ee37]"><span className="h-px w-8 bg-[#b8ee37]" />{children}</div>;
 }
 
 export default function Home() {
