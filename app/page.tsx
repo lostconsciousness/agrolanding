@@ -214,10 +214,11 @@ export default function Home() {
           <div className="flex items-center gap-2">
             <label className="language-select">
               <span className="sr-only">Language</span>
+              <Globe2 className="language-icon" aria-hidden="true" />
               <select value={locale} onChange={(e) => changeLocale(e.target.value)} aria-label="Language">
-                {Object.entries(languages).map(([code, lang]) => <option key={code} value={code}>{lang.short} · {lang.name}</option>)}
+                {Object.entries(languages).map(([code, lang]) => <option key={code} value={code}>{lang.name}</option>)}
               </select>
-              <ChevronDown size={14} aria-hidden="true" />
+              <ChevronDown className="language-chevron" aria-hidden="true" />
             </label>
             <a href="#demo" className="nav-demo hidden sm:inline-flex">{t.demo}<ArrowUpRight size={15} /></a>
             <button className="menu-button lg:hidden" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu" aria-expanded={menuOpen}>{menuOpen ? <X /> : <Menu />}</button>
