@@ -8,6 +8,8 @@ import {
   Bot,
   Check,
   ChevronDown,
+  CircleAlert,
+  CircleCheck,
   CircleDollarSign,
   CloudSun,
   FileCheck2,
@@ -30,7 +32,8 @@ import {
   X,
   Zap,
 } from 'lucide-react';
-import { useEffect, useState, type ReactNode } from 'react';
+import { initializePaddle, type Paddle, type PaddleEventData } from '@paddle/paddle-js';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 
 type Locale = 'uk' | 'en' | 'pl' | 'kk' | 'de';
 
@@ -41,6 +44,47 @@ const languages: Record<Locale, { short: string; name: string }> = {
   kk: { short: 'KZ', name: 'Қазақша' },
   de: { short: 'DE', name: 'Deutsch' },
 };
+
+const paymentCopy: Record<Locale, { loading: string; unavailable: string; error: string; success: string }> = {
+  uk: {
+    loading: 'Відкриваємо оплату…',
+    unavailable: 'Paddle Checkout підготовлено. Оплата запрацює одразу після додавання ключів і Price ID.',
+    error: 'Не вдалося відкрити оплату. Спробуйте ще раз або зв’яжіться з нами.',
+    success: 'Оплату завершено. Ми зв’яжемося з вами щодо наступних кроків.',
+  },
+  en: {
+    loading: 'Opening checkout…',
+    unavailable: 'Paddle Checkout is ready. Payments will activate as soon as the keys and Price IDs are added.',
+    error: 'Checkout could not be opened. Please try again or contact us.',
+    success: 'Payment completed. We will contact you with the next steps.',
+  },
+  pl: {
+    loading: 'Otwieramy płatność…',
+    unavailable: 'Paddle Checkout jest przygotowany. Płatności ruszą po dodaniu kluczy i Price ID.',
+    error: 'Nie udało się otworzyć płatności. Spróbuj ponownie lub skontaktuj się z nami.',
+    success: 'Płatność zakończona. Skontaktujemy się w sprawie kolejnych kroków.',
+  },
+  kk: {
+    loading: 'Төлем ашылуда…',
+    unavailable: 'Paddle Checkout дайын. Кілттер мен Price ID қосылғаннан кейін төлем бірден іске қосылады.',
+    error: 'Төлемді ашу мүмкін болмады. Қайталап көріңіз немесе бізге хабарласыңыз.',
+    success: 'Төлем аяқталды. Келесі қадамдар бойынша сізбен хабарласамыз.',
+  },
+  de: {
+    loading: 'Checkout wird geöffnet…',
+    unavailable: 'Paddle Checkout ist vorbereitet. Zahlungen werden nach dem Eintragen der Schlüssel und Price IDs aktiviert.',
+    error: 'Der Checkout konnte nicht geöffnet werden. Bitte versuchen Sie es erneut oder kontaktieren Sie uns.',
+    success: 'Zahlung abgeschlossen. Wir melden uns mit den nächsten Schritten.',
+  },
+};
+
+const paddlePriceIds = [
+  process.env.NEXT_PUBLIC_PADDLE_PRICE_BASIC,
+  process.env.NEXT_PUBLIC_PADDLE_PRICE_BUSINESS,
+  process.env.NEXT_PUBLIC_PADDLE_PRICE_MAX,
+];
+
+type PaymentState = 'idle' | 'loading' | 'unavailable' | 'error' | 'success';
 
 const copy = {
   uk: {
@@ -169,6 +213,9 @@ export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [demoIndex, setDemoIndex] = useState(0);
   const [openFaq, setOpenFaq] = useState(0);
+  const [paymentState, setPaymentState] = useState<PaymentState>('idle');
+  const [loadingPlan, setLoadingPlan] = useState<number | null>(null);
+  const paddleRef = useRef<Promise<Paddle | undefined> | null>(null);
   const t = copy[locale];
 
   useEffect(() => {
@@ -200,6 +247,60 @@ export default function Home() {
   }, []);
 
   const changeLocale = (value: string) => setLocale(value as Locale);
+
+  const handlePaddleEvent = (event: PaddleEventData) => {
+    if (event.name === 'checkout.completed') {
+      setLoadingPlan(null);
+      setPaymentState('success');
+    }
+
+    if (event.name === 'checkout.error' || event.name === 'checkout.payment.error' || event.name === 'checkout.failed') {
+      setLoadingPlan(null);
+      setPaymentState('error');
+    }
+  };
+
+  const openCheckout = async (planIndex: number) => {
+    const token = process.env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN;
+    const priceId = paddlePriceIds[planIndex];
+
+    if (!token || !priceId) {
+      setPaymentState('unavailable');
+      return;
+    }
+
+    setLoadingPlan(planIndex);
+    setPaymentState('loading');
+
+    try {
+      paddleRef.current ??= initializePaddle({
+        token,
+        environment: process.env.NEXT_PUBLIC_PADDLE_ENVIRONMENT === 'production' ? 'production' : 'sandbox',
+        eventCallback: handlePaddleEvent,
+      });
+
+      const paddle = await paddleRef.current;
+      if (!paddle) throw new Error('Paddle.js did not initialize');
+
+      paddle.Checkout.open({
+        items: [{ priceId, quantity: 1 }],
+        customData: { plan: String(t.plans[planIndex][0]).toLowerCase() },
+        settings: {
+          displayMode: 'overlay',
+          theme: 'dark',
+          variant: 'one-page',
+        },
+      });
+
+      setLoadingPlan(null);
+      setPaymentState('idle');
+    } catch (error) {
+      console.error('Unable to open Paddle Checkout', error);
+      paddleRef.current = null;
+      setLoadingPlan(null);
+      setPaymentState('error');
+    }
+  };
 
   return (
     <main className="overflow-hidden bg-[#061009] text-[#f5f8f3]">
@@ -320,9 +421,11 @@ export default function Home() {
       <section id="pricing" className="pricing-section py-36 md:py-52">
         <div className="section-shell">
           <Reveal><Kicker>{t.pricingKicker}</Kicker><h2 className="section-title max-w-5xl">{t.pricingTitle}</h2></Reveal>
-          <div className="pricing-grid mt-16">{t.plans.map(([name, price, desc, features], i) => <Reveal key={name as string} delay={i * 90}><article className={`price-card ${i === 1 ? 'featured' : ''}`}>{i === 1 && <div className="popular"><Sparkles size={13} />{t.popular}</div>}<span className="plan-index">0{i + 1}</span><h3>{name as string}</h3><p>{desc as string}</p><div className="price"><strong>{price as string}</strong><span>{t.perYear}</span></div><div className="plan-features">{(features as string[]).map((feature) => <div key={feature}><Check />{feature}</div>)}</div><a href="#demo" className={i === 1 ? 'primary-button' : 'secondary-button'}>{t.choose}<ArrowRight size={16} /></a></article></Reveal>)}</div>
+          <div className="pricing-grid mt-16">{t.plans.map(([name, price, desc, features], i) => <Reveal key={name as string} delay={i * 90}><article className={`price-card ${i === 1 ? 'featured' : ''}`}>{i === 1 && <div className="popular"><Sparkles size={13} />{t.popular}</div>}<span className="plan-index">0{i + 1}</span><h3>{name as string}</h3><p>{desc as string}</p><div className="price"><strong>{price as string}</strong><span>{t.perYear}</span></div><div className="plan-features">{(features as string[]).map((feature) => <div key={feature}><Check />{feature}</div>)}</div><button type="button" className={i === 1 ? 'primary-button' : 'secondary-button'} onClick={() => openCheckout(i)} disabled={loadingPlan !== null}>{loadingPlan === i ? paymentCopy[locale].loading : t.choose}<ArrowRight size={16} /></button></article></Reveal>)}</div>
         </div>
       </section>
+
+      {paymentState !== 'idle' && <div className={`payment-toast ${paymentState}`} role="status" aria-live="polite">{paymentState === 'success' ? <CircleCheck /> : paymentState === 'loading' ? <CircleDollarSign /> : <CircleAlert />}<p>{paymentCopy[locale][paymentState]}</p><button type="button" onClick={() => setPaymentState('idle')} aria-label="Close"><X /></button></div>}
 
       <section className="section-shell py-36 md:py-52">
         <div className="grid gap-14 lg:grid-cols-[.8fr_1.2fr]">

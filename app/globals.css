@@ -217,7 +217,17 @@ a:hover, button:hover { transform: translateY(-2px); }
 .plan-features { display: grid; gap: .85rem; margin-top: 2rem; }
 .plan-features > div { display: flex; align-items: center; gap: .65rem; color: rgba(255,255,255,.68); font-size: .85rem; }
 .plan-features svg { width: 16px; color: #b8ee37; }
-.price-card > a { position: absolute; inset-inline: 2rem; bottom: 2rem; }
+.price-card > a,.price-card > button { position: absolute; inset-inline: 2rem; bottom: 2rem; width: calc(100% - 4rem); border: 0; cursor: pointer; }
+.price-card > button:disabled { cursor: wait; opacity: .72; transform: none; }
+
+.payment-toast { position: fixed; z-index: 80; right: 1.25rem; bottom: 1.25rem; display: grid; grid-template-columns: 1.5rem minmax(0,1fr) 2rem; width: min(440px,calc(100% - 2rem)); align-items: start; gap: .9rem; padding: 1rem 1rem 1rem 1.1rem; border: 1px solid rgba(184,238,55,.26); border-radius: 1.25rem; color: rgba(255,255,255,.84); background: rgba(7,18,11,.96); box-shadow: 0 24px 80px rgba(0,0,0,.42),0 0 32px rgba(184,238,55,.08); backdrop-filter: blur(18px); }
+.payment-toast > svg { width: 22px; height: 22px; color: #c9ff3f; filter: drop-shadow(0 0 7px rgba(184,238,55,.28)); }
+.payment-toast p { font-size: .88rem; line-height: 1.55; }
+.payment-toast > button { display: grid; width: 2rem; height: 2rem; place-items: center; margin: -.35rem -.35rem 0 0; border: 1px solid rgba(255,255,255,.1); border-radius: 50%; color: rgba(255,255,255,.62); background: rgba(255,255,255,.035); cursor: pointer; }
+.payment-toast > button svg { width: 16px; height: 16px; }
+.payment-toast.error { border-color: rgba(255,171,92,.34); }
+.payment-toast.error > svg { color: #ffab5c; filter: none; }
+.payment-toast.success { border-color: rgba(184,238,55,.46); }
 
 .faq-list article { border-top: 1px solid rgba(255,255,255,.12); }
 .faq-list article:last-child { border-bottom: 1px solid rgba(255,255,255,.12); }
@@ -380,6 +390,7 @@ a:hover, button:hover { transform: translateY(-2px); }
   .fleet-shade { background: linear-gradient(0deg,#061009 0%,rgba(6,16,9,.7) 55%,rgba(6,16,9,.93) 100%); }
   .machine-track { width: 80%; right: 10%; bottom: 9%; }
   .price-card { min-height: 560px; }
+  .price-card > a,.price-card > button { inset-inline: 1.4rem; width: calc(100% - 2.8rem); }
   .popular { font-size: .72rem; }
   .price-card > p { font-size: .92rem; line-height: 1.5; }
   .price span { font-size: .82rem; }
@@ -389,6 +400,7 @@ a:hover, button:hover { transform: translateY(-2px); }
   .cta-content { padding-inline: 1rem; }
   .cta-orbit { width: 150%; }
   .footer { padding-inline: .5rem; font-size: .83rem; line-height: 1.5; }
+  .payment-toast { right: 1rem; bottom: 1rem; width: calc(100% - 2rem); }
   .hero-badge,.secondary-button,.stats-bar,.calc-card,.fleet-dashboard article { backdrop-filter: none; }
   .chat-panel::before,.finance-glow { display: none; }
   .media-section.is-visible .media-visual { opacity: .5; }
