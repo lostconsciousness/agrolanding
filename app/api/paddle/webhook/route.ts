@@ -1,3 +1,5 @@
+import { env } from 'cloudflare:workers';
+
 type PaddleWebhookEvent = {
   event_id?: string;
   event_type?: string;
@@ -60,7 +62,7 @@ async function verifyPaddleSignature(rawBody: string, signatureHeader: string, s
 }
 
 export async function POST(request: Request) {
-  const secret = process.env.PADDLE_WEBHOOK_SECRET;
+  const secret = env.PADDLE_WEBHOOK_SECRET;
   if (!secret) {
     return Response.json({ error: 'Paddle webhook is not configured' }, { status: 503 });
   }
