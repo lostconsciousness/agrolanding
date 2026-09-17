@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "vinext dev",
     "build": "vinext build",
+    "postbuild": "node scripts/remove-build-secrets.mjs",
     "start": "wrangler dev --config dist/server/wrangler.json",
     "deploy": "wrangler deploy",
     "deploy:check": "wrangler deploy --dry-run",
