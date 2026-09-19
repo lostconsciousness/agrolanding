@@ -231,6 +231,10 @@ export function PricingClient({ countryCode, customerEmail }: PricingClientProps
           <span>Localized currency and taxes</span>
           <span>Cancel through your customer portal</span>
         </div>
+        <div className="mt-10 flex flex-wrap justify-center gap-x-6 gap-y-3 border-t border-white/8 pt-8 text-xs text-white/36">
+          <a className="transition hover:text-[#b8ee37]" href="/project-declaration">Декларация проекта</a>
+          <a className="transition hover:text-[#b8ee37]" href="/risk-disclosure">Уведомление о рисках</a>
+        </div>
       </section>
     </main>
   );

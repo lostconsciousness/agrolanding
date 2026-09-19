@@ -335,7 +335,17 @@ export default function Home() {
         <Reveal><div className="final-cta"><div className="cta-grid" /><div className="cta-content"><div className="logo-mark large"><Wheat /></div><h2>{t.ctaTitle}</h2><p>{t.ctaText}</p><a href="mailto:hello@core-agro.ai" className="primary-button">{t.ctaButton}<ArrowUpRight size={18} /></a></div><div className="cta-orbit" /></div></Reveal>
       </section>
 
-      <footer className="section-shell footer"><div className="brand flex items-center gap-3 font-semibold tracking-[0.16em]"><span className="logo-mark"><Leaf size={18} /></span> CORE·AGRO</div><p>{t.footer}</p><p>© 2026 CORE AGRO. {t.rights}</p></footer>
+      <footer className="section-shell footer">
+        <div className="brand flex items-center gap-3 font-semibold tracking-[0.16em]"><span className="logo-mark"><Leaf size={18} /></span> CORE·AGRO</div>
+        <p>{t.footer}</p>
+        <div className="footer-meta">
+          <nav className="footer-links" aria-label="Legal">
+            <a href="/project-declaration">Декларация проекта</a>
+            <a href="/risk-disclosure">Уведомление о рисках</a>
+          </nav>
+          <p>© 2026 CORE AGRO. {t.rights}</p>
+        </div>
+      </footer>
     </main>
   );
 }
