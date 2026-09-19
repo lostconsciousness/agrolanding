@@ -50,3 +50,18 @@ The `/account` page resolves the authenticated visitor from trusted Sites
 headers, looks up their Paddle customer ID server-side, and mints a fresh
 Paddle-hosted customer portal session. It never accepts a customer ID from the
 browser.
+
+## Public Cloudflare Worker deployment
+
+The production webhook currently points at the public Workers URL, so that
+Worker also needs the same durable binding and server secrets:
+
+1. Create a production D1 database in Cloudflare.
+2. Add a D1 binding named exactly `DB` to the `agrolanding` Worker.
+3. Apply `drizzle/0000_mature_crystal.sql` once to that database.
+4. Add `PADDLE_ENVIRONMENT=production`, `PADDLE_API_KEY`, and
+   `PADDLE_NOTIFICATION_WEBHOOK_SECRET` as Worker variables/secrets. The legacy
+   `PADDLE_WEBHOOK_SECRET` remains accepted while migrating.
+5. Redeploy the Worker, then replay any failed Paddle notifications from the
+   notification log. Never delete the notification destination or mirrored
+   Paddle rows.
