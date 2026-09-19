@@ -9,20 +9,19 @@ Copy `.env.example` to `.env.local` for local testing, then replace the placehol
 
 - `NEXT_PUBLIC_PADDLE_CLIENT_TOKEN`: live Paddle client-side token prefixed with `live_`.
 - `NEXT_PUBLIC_PADDLE_ENVIRONMENT`: must be explicitly set to `production` for the live pricing page.
-- `NEXT_PUBLIC_PADDLE_PRICE_STARTER_MONTH` / `NEXT_PUBLIC_PADDLE_PRICE_STARTER_YEAR`.
-- `NEXT_PUBLIC_PADDLE_PRICE_PRO_MONTH` / `NEXT_PUBLIC_PADDLE_PRICE_PRO_YEAR`.
-- `NEXT_PUBLIC_PADDLE_PRICE_ADVANCED_MONTH` / `NEXT_PUBLIC_PADDLE_PRICE_ADVANCED_YEAR`.
+- `NEXT_PUBLIC_PADDLE_PRICE_BASIC`: annual recurring price for CORE BASIC.
+- `NEXT_PUBLIC_PADDLE_PRICE_BUSINESS`: annual recurring price for CORE BUSINESS.
+- `NEXT_PUBLIC_PADDLE_PRICE_MAX`: annual recurring price for CORE MAX.
 - `PADDLE_ENVIRONMENT`: `production` for the live server SDK. The server fails loudly if it is missing or not live.
 - `PADDLE_API_KEY`: live server-side API key used only to mint customer portal sessions.
 - `PADDLE_NOTIFICATION_WEBHOOK_SECRET`: signing secret for the notification destination. The legacy `PADDLE_WEBHOOK_SECRET` name remains accepted during migration.
 
-The original annual variables (`BASIC`, `BUSINESS`, `MAX`) remain accepted as
-backwards-compatible yearly aliases. New setups should use the six explicit
-monthly/yearly variables.
+The site offers annual subscriptions only. Monthly Price IDs are not read by
+the application and no monthly billing option is shown in the interface.
 
 ## Paddle dashboard
 
-1. Create Starter, Pro and Advanced as SaaS products, with one monthly and one yearly recurring price for each.
+1. Create CORE BASIC, CORE BUSINESS and CORE MAX as SaaS products, with one annual recurring price for each.
 2. Create a client-side token under **Developer Tools → Authentication**.
 3. Create a notification destination under **Developer Tools → Notifications** using:
 

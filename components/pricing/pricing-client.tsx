@@ -3,7 +3,6 @@
 import { initializePaddle, type Paddle, type PaddleEventData } from '@paddle/paddle-js';
 import {
   ArrowRight,
-  CalendarDays,
   Check,
   CircleAlert,
   Globe2,
@@ -13,9 +12,9 @@ import {
   Sparkles,
   UserRound,
 } from 'lucide-react';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { usePaddlePrices } from '@/hooks/use-paddle-prices';
-import { pricingTiers, type BillingFrequency, type Tier } from '@/lib/pricing-tiers';
+import { pricingTiers, type Tier } from '@/lib/pricing-tiers';
 
 interface PricingClientProps {
   countryCode?: string;
@@ -58,7 +57,6 @@ function getCheckoutError(event: PaddleEventData) {
 }
 
 export function PricingClient({ countryCode, customerEmail }: PricingClientProps) {
-  const [frequency, setFrequency] = useState<BillingFrequency>('year');
   const [paddle, setPaddle] = useState<Paddle>();
   const [configurationError, setConfigurationError] = useState<string | null>(null);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
@@ -68,11 +66,6 @@ export function PricingClient({ countryCode, customerEmail }: PricingClientProps
   const { prices, loading: pricesLoading, error: pricesError } = usePaddlePrices(
     paddle,
     countryCode,
-  );
-
-  const missingPriceIds = useMemo(
-    () => pricingTiers.filter((tier) => !tier.priceId[frequency]).map((tier) => tier.name),
-    [frequency],
   );
 
   useEffect(() => {
@@ -116,7 +109,7 @@ export function PricingClient({ countryCode, customerEmail }: PricingClientProps
   }, []);
 
   const openCheckout = (tier: Tier) => {
-    const priceId = tier.priceId[frequency];
+    const priceId = tier.priceId;
     if (!paddle || !priceId) return;
 
     setCheckoutError(null);
@@ -125,7 +118,7 @@ export function PricingClient({ countryCode, customerEmail }: PricingClientProps
     paddle.Checkout.open({
       items: [{ priceId, quantity: 1 }],
       ...(customerEmail ? { customer: { email: customerEmail } } : {}),
-      customData: { plan: tier.id, billing_frequency: frequency },
+      customData: { plan: tier.id, billing_frequency: 'year' },
       settings: {
         displayMode: 'overlay',
         variant: 'one-page',
@@ -156,7 +149,7 @@ export function PricingClient({ countryCode, customerEmail }: PricingClientProps
       <section className="relative z-10 mx-auto max-w-[1320px] px-5 pb-24 pt-20 lg:px-10 lg:pt-28">
         <div className="mx-auto max-w-4xl text-center">
           <div className="mx-auto mb-6 flex w-fit items-center gap-2 rounded-full border border-[#b8ee37]/25 bg-[#b8ee37]/5 px-4 py-2 text-xs font-semibold uppercase tracking-[.17em] text-[#cef46d]">
-            <ShieldCheck size={17} /> Secure annual or monthly billing
+            <ShieldCheck size={17} /> Secure annual billing
           </div>
           <h1 className="text-balance text-[clamp(3.2rem,8vw,7.2rem)] font-medium leading-[.9] tracking-[-.065em]">
             Choose the plan that <span className="text-[#b8ee37]">moves your farm forward.</span>
@@ -165,21 +158,7 @@ export function PricingClient({ countryCode, customerEmail }: PricingClientProps
             Prices are localized by Paddle for your country and include the applicable currency and tax treatment.
           </p>
 
-          <div className="mx-auto mt-9 flex w-fit items-center gap-1 rounded-full border border-white/10 bg-white/[.045] p-1.5" aria-label="Billing frequency">
-            {(['month', 'year'] as BillingFrequency[]).map((value) => (
-              <button
-                key={value}
-                type="button"
-                onClick={() => setFrequency(value)}
-                aria-pressed={frequency === value}
-                className={`flex min-h-11 items-center gap-2 rounded-full px-5 text-sm font-semibold transition ${frequency === value ? 'bg-[#b8ee37] text-[#061009]' : 'text-white/58 hover:bg-white/5 hover:text-white'}`}
-              >
-                <CalendarDays size={18} /> {value === 'month' ? 'Monthly' : 'Yearly'}
-              </button>
-            ))}
-          </div>
-
-          <div className="mt-5 flex items-center justify-center gap-2 text-xs text-white/38">
+          <div className="mt-9 flex items-center justify-center gap-2 text-xs text-white/38">
             <Globe2 size={16} className="text-[#b8ee37]" />
             {countryCode ? `Localized for ${countryCode}` : 'Location detected securely by Paddle'}
           </div>
@@ -192,15 +171,9 @@ export function PricingClient({ countryCode, customerEmail }: PricingClientProps
           </div>
         )}
 
-        {missingPriceIds.length > 0 && (
-          <div className="mx-auto mt-4 max-w-3xl rounded-2xl border border-white/10 bg-white/[.035] px-5 py-4 text-sm leading-6 text-white/52" role="status">
-            Add the {frequency} Price ID for {missingPriceIds.join(', ')} to enable this billing option.
-          </div>
-        )}
-
         <div className="mt-14 grid gap-4 lg:grid-cols-3">
           {pricingTiers.map((tier, index) => {
-            const priceId = tier.priceId[frequency];
+            const priceId = tier.priceId;
             const formattedTotal = priceId ? prices[priceId] : undefined;
             const isOpening = openingTier === tier.id;
             const disabled = !paddle || !priceId || !formattedTotal || openingTier !== null;
@@ -228,7 +201,7 @@ export function PricingClient({ countryCode, customerEmail }: PricingClientProps
                         {formattedTotal ?? '—'}
                       </strong>
                     )}
-                    <span className="pb-2 text-sm text-white/35">/{frequency}</span>
+                    <span className="pb-2 text-sm text-white/35">/year</span>
                   </div>
                 </div>
 

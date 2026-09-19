@@ -4,7 +4,7 @@ import { PricingClient } from '@/components/pricing/pricing-client';
 
 export const metadata: Metadata = {
   title: 'Pricing — CORE AGRO',
-  description: 'Localized monthly and yearly CORE AGRO plans with secure Paddle checkout.',
+  description: 'Localized annual CORE AGRO plans with secure Paddle checkout.',
 };
 
 function normalizeCountryCode(value: string | null) {
@@ -22,4 +22,3 @@ export default async function PricingPage() {
   // Pass the authenticated user's email here when app authentication is connected.
   return <PricingClient countryCode={countryCode} />;
 }
-

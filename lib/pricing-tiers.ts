@@ -1,75 +1,58 @@
-export type BillingFrequency = 'month' | 'year';
-
 export interface Tier {
-  name: 'Starter' | 'Pro' | 'Advanced';
-  id: 'starter' | 'pro' | 'advanced';
+  name: 'CORE BASIC' | 'CORE BUSINESS' | 'CORE MAX';
+  id: 'basic' | 'business' | 'max';
   description: string;
   features: string[];
   featured: boolean;
-  priceId: { month: string; year: string };
+  priceId: string;
 }
 
 export const pricingTiers: Tier[] = [
   {
-    name: 'Starter',
-    id: 'starter',
-    description: 'A clear operating layer for smaller farms.',
+    name: 'CORE BASIC',
+    id: 'basic',
+    description: 'For smaller farms that currently sell primarily in their local market.',
     features: [
       'Up to 5 users',
-      'Management AI assistant',
-      'Team tasks and control',
-      'Reports and alerts',
+      'AI management assistant',
+      'Agricultural knowledge base',
+      'Recommendations and solution search',
+      'Team tasks and employee control',
+      'Reports and notifications',
     ],
     featured: false,
-    priceId: {
-      month: process.env.NEXT_PUBLIC_PADDLE_PRICE_STARTER_MONTH ?? '',
-      year:
-        process.env.NEXT_PUBLIC_PADDLE_PRICE_STARTER_YEAR ??
-        process.env.NEXT_PUBLIC_PADDLE_PRICE_BASIC ??
-        '',
-    },
+    priceId: process.env.NEXT_PUBLIC_PADDLE_PRICE_BASIC ?? '',
   },
   {
-    name: 'Pro',
-    id: 'pro',
-    description: 'Sales intelligence and machinery visibility for growing teams.',
+    name: 'CORE BUSINESS',
+    id: 'business',
+    description: 'For farms selling larger volumes and losing margin to intermediaries.',
     features: [
       'Up to 10 users',
-      'Everything in Starter',
-      'Direct EU buyer matching',
+      'Everything in CORE BASIC',
+      'Extended business profile',
+      'Direct EU buyers and contacts',
+      'Matching by price, volume and payment terms',
       'Up to 20 machines online',
     ],
     featured: true,
-    priceId: {
-      month: process.env.NEXT_PUBLIC_PADDLE_PRICE_PRO_MONTH ?? '',
-      year:
-        process.env.NEXT_PUBLIC_PADDLE_PRICE_PRO_YEAR ??
-        process.env.NEXT_PUBLIC_PADDLE_PRICE_BUSINESS ??
-        '',
-    },
+    priceId: process.env.NEXT_PUBLIC_PADDLE_PRICE_BUSINESS ?? '',
   },
   {
-    name: 'Advanced',
-    id: 'advanced',
-    description: 'Financing, grants and wider fleet control for complex operations.',
+    name: 'CORE MAX',
+    id: 'max',
+    description: 'For agricultural companies seeking €100–600k in development funding.',
     features: [
       'Up to 15 users',
-      'Everything in Pro',
-      'Loans and grants workflows',
+      'Everything in CORE BASIC and CORE BUSINESS',
+      'Loans and preferential financing',
+      'EU grants and programmes',
+      'Application autofill and submission',
       'Up to 50 machines online',
     ],
     featured: false,
-    priceId: {
-      month: process.env.NEXT_PUBLIC_PADDLE_PRICE_ADVANCED_MONTH ?? '',
-      year:
-        process.env.NEXT_PUBLIC_PADDLE_PRICE_ADVANCED_YEAR ??
-        process.env.NEXT_PUBLIC_PADDLE_PRICE_MAX ??
-        '',
-    },
+    priceId: process.env.NEXT_PUBLIC_PADDLE_PRICE_MAX ?? '',
   },
 ];
 
-export const configuredPriceIds = pricingTiers.flatMap((tier) =>
-  [tier.priceId.month, tier.priceId.year].filter(Boolean),
-);
-
+export const configuredPriceIds = pricingTiers.map((tier) => tier.priceId).filter(Boolean);
