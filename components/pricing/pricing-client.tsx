@@ -11,6 +11,7 @@ import {
   LoaderCircle,
   ShieldCheck,
   Sparkles,
+  UserRound,
 } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { usePaddlePrices } from '@/hooks/use-paddle-prices';
@@ -42,7 +43,8 @@ function getLivePaddleConfig() {
 }
 
 function getCheckoutError(event: PaddleEventData) {
-  const detail = event.detail ?? event.errors?.[0]?.message;
+  const eventErrors = (event as PaddleEventData & { errors?: Array<{ message?: string }> }).errors;
+  const detail = event.detail ?? eventErrors?.[0]?.message;
   if (detail === 'transaction_checkout_not_enabled') {
     return 'Live checkout is not enabled for this Paddle account yet.';
   }
@@ -144,7 +146,10 @@ export function PricingClient({ countryCode, customerEmail }: PricingClientProps
           <a className="brand flex items-center gap-3 font-semibold tracking-[0.16em]" href="/">
             <span className="logo-mark"><Leaf size={18} /></span> CORE·AGRO
           </a>
-          <a className="secondary-button min-h-10 px-4 text-xs" href="/">Back to platform</a>
+          <div className="flex items-center gap-2">
+            <a className="secondary-button min-h-10 px-4 text-xs" href="/account"><UserRound size={16} /> Account</a>
+            <a className="secondary-button hidden min-h-10 px-4 text-xs sm:inline-flex" href="/">Back to platform</a>
+          </div>
         </div>
       </header>
 
@@ -257,4 +262,3 @@ export function PricingClient({ countryCode, customerEmail }: PricingClientProps
     </main>
   );
 }
-
