@@ -37,6 +37,8 @@ or a public NEXT_PUBLIC variable). For local development use `.env.local`.
 | `AUTH_SECRET` | A private random value, at least 32 characters. Generate with `openssl rand -hex 32`. |
 | `AI_DAILY_MESSAGE_LIMIT` | Optional positive integer (default 40, maximum 500). Set a provider project spend limit too. |
 | `OPENAI_AGRO_VECTOR_STORE_ID` | Optional OpenAI vector store containing your approved agricultural reference documents. |
+| `CHAT_TESTER_EMAIL` | Optional single verified tester email. Set only for an account whose mailbox you control. |
+| `CHAT_TESTER_UNTIL` | Required alongside `CHAT_TESTER_EMAIL`; UTC expiry such as `2026-10-03T00:00:00Z`. Once expired, the normal subscription check applies. |
 
 No real key is required in source control. Missing AI/email configuration yields an
 explicit unavailable state, not a fake answer. No paid OpenAI calls or real Paddle
@@ -57,7 +59,11 @@ Do not re-run already-applied CREATE TABLE migrations.
 
 If a subscription is missing from the mirror, replay the relevant real Paddle
 notifications after ensuring the webhook uses that database. Do not fabricate a paid
-subscription or bypass the access check to test production. Multiple browser sessions
+subscription in the production mirror. A temporary tester entitlement can be configured
+with both `CHAT_TESTER_EMAIL` and `CHAT_TESTER_UNTIL`: the user must still authenticate
+through the normal email code, only that exact email gets chat access, and no Paddle
+customer/subscription/transaction rows are created or changed. Remove both variables
+when testing is complete. Multiple browser sessions
 on one email share history; team invitations/seat management are not implemented.
 
 ## Knowledge and data to supply

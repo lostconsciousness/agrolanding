@@ -4,6 +4,7 @@ import { ArrowLeft, CircleAlert, ExternalLink, Leaf, ReceiptText, ShieldCheck } 
 import { getAuthenticatedUser } from '@/lib/server/auth';
 import { getBillingByEmail } from '@/lib/server/billing-store';
 import { subscriptionGrantsPaidAccess } from '@/lib/server/subscription-access';
+import { grantsTemporaryChatAccess } from '@/lib/server/chat-test-access';
 
 export const dynamic = 'force-dynamic';
 
@@ -36,7 +37,8 @@ export default async function AccountPage() {
 
   const { customer, subscriptions } = await getBillingByEmail(user.email);
   const currentSubscription = subscriptions.find(subscriptionGrantsPaidAccess) ?? subscriptions[0] ?? null;
-  const hasAccess = subscriptionGrantsPaidAccess(currentSubscription);
+  const isTester = grantsTemporaryChatAccess(user.email);
+  const hasAccess = subscriptionGrantsPaidAccess(currentSubscription) || isTester;
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#061009] px-5 py-10 text-[#f5f8f3] md:py-16">
@@ -57,7 +59,7 @@ export default async function AccountPage() {
               <p className="mt-4 text-sm text-white/45">{user.email}</p>
             </div>
             <span className={`w-fit rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[.12em] ${hasAccess ? 'border-[#b8ee37]/40 bg-[#b8ee37]/10 text-[#cef46d]' : 'border-white/10 bg-white/[.04] text-white/50'}`}>
-              {hasAccess ? 'Access active' : 'No paid access'}
+              {isTester && !currentSubscription ? 'Test access active' : hasAccess ? 'Access active' : 'No paid access'}
             </span>
           </div>
 
@@ -80,7 +82,9 @@ export default async function AccountPage() {
             </div>
           ) : (
             <div className="mt-8 rounded-2xl border border-white/10 bg-black/10 p-6 text-sm leading-7 text-white/55">
-              No completed Paddle subscription is linked to this email yet. Choose a plan first, then return here to manage it.
+              {isTester
+                ? 'Temporary test access is active for the AI chat. This is not a Paddle subscription and expires automatically.'
+                : 'No completed Paddle subscription is linked to this email yet. Choose a plan first, then return here to manage it.'}
             </div>
           )}
 

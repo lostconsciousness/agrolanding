@@ -237,6 +237,24 @@ await status(
 await status(await chat.GET(req('/api/chat', { cookie })), 402);
 const user = await auth.getAuthenticatedUser(new Headers({ cookie }));
 assert.equal(user.email, 'paid@example.com');
+env.CHAT_TESTER_EMAIL = 'paid@example.com';
+env.CHAT_TESTER_UNTIL = new Date(Date.now() + 60_000)
+  .toISOString()
+  .replace(/\.\d{3}Z$/, 'Z');
+await status(await chat.GET(req('/api/chat', { cookie })), 200);
+await status(
+  await chat.GET(req('/api/chat', {
+    extra: { 'oai-authenticated-user-email': 'paid@example.com' },
+  })),
+  401,
+);
+env.CHAT_TESTER_EMAIL = 'someone-else@example.com';
+await status(await chat.GET(req('/api/chat', { cookie })), 402);
+env.CHAT_TESTER_EMAIL = 'paid@example.com';
+env.CHAT_TESTER_UNTIL = '2020-01-01T00:00:00Z';
+await status(await chat.GET(req('/api/chat', { cookie })), 402);
+delete env.CHAT_TESTER_EMAIL;
+delete env.CHAT_TESTER_UNTIL;
 const attemptChallenge = await (
   await requestCode.POST(
     req('/api/auth/request-code', { body: { email: 'attempts@example.com' } }),
