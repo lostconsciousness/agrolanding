@@ -6,6 +6,7 @@
     "node": ">=22.13.0"
   },
   "scripts": {
+    "test:chat": "node scripts/test-chat.mjs",
     "dev": "vinext dev",
     "build": "vinext build",
     "db:generate": "drizzle-kit generate",

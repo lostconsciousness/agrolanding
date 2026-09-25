@@ -1,6 +1,9 @@
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 import { PricingClient } from '@/components/pricing/pricing-client';
+import { getAuthenticatedUser } from '@/lib/server/auth';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Pricing — CORE AGRO',
@@ -19,6 +22,6 @@ export default async function PricingPage() {
     requestHeaders.get('cf-ipcountry') ?? requestHeaders.get('x-vercel-ip-country'),
   );
 
-  // Pass the authenticated user's email here when app authentication is connected.
-  return <PricingClient countryCode={countryCode} />;
+  const user = await getAuthenticatedUser(requestHeaders);
+  return <PricingClient countryCode={countryCode} customerEmail={user?.email} />;
 }

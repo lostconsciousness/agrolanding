@@ -19,7 +19,7 @@ function formatDate(value: string | null) {
 
 export default async function AccountPage() {
   const requestHeaders = await headers();
-  const user = getAuthenticatedUser(requestHeaders);
+  const user = await getAuthenticatedUser(requestHeaders);
 
   if (!user) {
     return (
@@ -27,15 +27,15 @@ export default async function AccountPage() {
         <section className="max-w-lg rounded-[2rem] border border-amber-300/25 bg-amber-200/[.06] p-8 text-center">
           <CircleAlert className="mx-auto text-amber-300" size={28} />
           <h1 className="mt-5 text-3xl font-medium">Sign in required</h1>
-          <p className="mt-3 leading-7 text-white/55">Open this page through your signed-in CORE AGRO site.</p>
-          <a className="secondary-button mt-7" href="/"><ArrowLeft size={18} /> Back to CORE AGRO</a>
+          <p className="mt-3 leading-7 text-white/55">Sign in with the email used for your subscription.</p>
+          <a className="secondary-button mt-7" href="/login?next=/account"><ArrowLeft size={20} /> Sign in</a>
         </section>
       </main>
     );
   }
 
   const { customer, subscriptions } = await getBillingByEmail(user.email);
-  const currentSubscription = subscriptions[0] ?? null;
+  const currentSubscription = subscriptions.find(subscriptionGrantsPaidAccess) ?? subscriptions[0] ?? null;
   const hasAccess = subscriptionGrantsPaidAccess(currentSubscription);
 
   return (
@@ -85,6 +85,7 @@ export default async function AccountPage() {
           )}
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            {hasAccess && <a className="primary-button" href="/chat">Open AI chat <Leaf size={20} /></a>}
             {customer ? (
               <form action="/api/paddle/customer-portal" method="post">
                 <button className="primary-button w-full sm:w-auto" type="submit">

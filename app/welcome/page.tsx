@@ -19,14 +19,13 @@ export default function WelcomePage() {
           Welcome aboard.
         </h1>
         <p className="mx-auto mt-6 max-w-lg text-base leading-7 text-white/56 md:text-lg">
-          Your checkout is complete. We’ll use your Paddle receipt details to arrange onboarding and the next steps.
+          Open your AI workspace using the email from checkout. Access activates after Paddle confirms your subscription; this may take a minute.
         </p>
         <div className="mt-10 flex flex-col justify-center gap-3 sm:flex-row">
-          <a href="/" className="primary-button">Return to CORE AGRO <ArrowRight size={18} /></a>
+          <a href="/chat" className="primary-button">Open AI workspace <ArrowRight size={20} /></a>
           <a href="mailto:hello@core-agro.ai" className="secondary-button"><Mail size={18} /> Contact support</a>
         </div>
       </section>
     </main>
   );
 }
-

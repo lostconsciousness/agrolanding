@@ -220,11 +220,11 @@ export default function Home() {
               </select>
               <ChevronDown className="language-chevron" aria-hidden="true" />
             </label>
-            <a href="#demo" className="nav-demo hidden sm:inline-flex">{t.demo}<ArrowUpRight size={15} /></a>
+            <a href="/chat" className="nav-demo hidden sm:inline-flex">{t.login}<ArrowUpRight size={20} /></a>
             <button className="menu-button lg:hidden" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu" aria-expanded={menuOpen}>{menuOpen ? <X /> : <Menu />}</button>
           </div>
         </div>
-        {menuOpen && <nav className="mobile-nav lg:hidden">{['product', 'features', 'process', 'pricing'].map((id, i) => <a key={id} href={id === 'pricing' ? '/pricing' : `#${id}`} onClick={() => setMenuOpen(false)}>{t.nav[i]}<ArrowRight size={16} /></a>)}</nav>}
+        {menuOpen && <nav className="mobile-nav lg:hidden">{['product', 'features', 'process', 'pricing'].map((id, i) => <a key={id} href={id === 'pricing' ? '/pricing' : `#${id}`} onClick={() => setMenuOpen(false)}>{t.nav[i]}<ArrowRight size={20} /></a>)}<a href="/chat">{t.login}<ArrowUpRight size={20} /></a></nav>}
       </header>
 
       <section id="top" className="hero-section relative min-h-[920px] overflow-hidden">

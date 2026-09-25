@@ -45,10 +45,11 @@ into D1. Event timestamps prevent an older out-of-order delivery from replacing
 newer state. `active`, `trialing`, and `past_due` grant access; `paused` and
 `canceled` do not. A scheduled cancel or pause never revokes access by itself.
 
-The `/account` page resolves the authenticated visitor from trusted Sites
-headers, looks up their Paddle customer ID server-side, and mints a fresh
+The `/account` page verifies an opaque email-login session cookie,
+looks up the Paddle customer ID server-side by the verified email, and mints a fresh
 Paddle-hosted customer portal session. It never accepts a customer ID from the
-browser.
+browser. Public `oai-authenticated-*` headers are not trusted. See
+`AI_CHAT_SETUP.md` for email login, AI configuration and the additional migration.
 
 ## Public Cloudflare Worker deployment
 
