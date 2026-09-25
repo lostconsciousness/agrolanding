@@ -340,6 +340,9 @@ export default function Home() {
         <p>{t.footer}</p>
         <div className="footer-meta">
           <nav className="footer-links" aria-label="Legal">
+            <a href="/terms">Terms of service</a>
+            <a href="/privacy">Privacy policy</a>
+            <a href="/refunds">Refund policy</a>
             <a href="/project-declaration">Декларация проекта</a>
             <a href="/risk-disclosure">Уведомление о рисках</a>
           </nav>

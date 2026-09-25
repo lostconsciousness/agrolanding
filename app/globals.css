@@ -247,6 +247,8 @@ a:hover, button:hover { transform: translateY(-2px); }
 .legal-copy ul { display: grid; gap: .7rem; padding-left: 1.1rem; list-style: none; }
 .legal-copy li { position: relative; padding-left: 1rem; }
 .legal-copy li::before { position: absolute; left: 0; top: .8em; width: 4px; height: 4px; border-radius: 50%; background: #b8ee37; content: ''; }
+.legal-copy a { color: #cef46d; text-decoration: underline; text-decoration-color: rgba(206,244,109,.45); text-underline-offset: 3px; }
+.legal-copy a:hover { text-decoration-color: #cef46d; }
 
 .reveal { min-width: 0; opacity: 0; transform: translateY(50px); transition: opacity .75s ease,transform .85s cubic-bezier(.17,.7,.2,1); }
 .reveal-left { transform: translateX(-80px); }
