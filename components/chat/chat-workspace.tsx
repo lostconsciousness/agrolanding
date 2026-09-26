@@ -6,7 +6,6 @@ import {
   type SubmitEvent,
   type ReactNode,
 } from 'react';
-import Link from 'next/link';
 import {
   ArrowUp,
   ArrowUpRight,
@@ -292,9 +291,9 @@ export function ChatWorkspace() {
   }
   const sidebar = (
     <>
-      <Link href="/" className="chat-brand">
+      <a href="/" className="chat-brand">
         <Leaf /> CORE·AGRO
-      </Link>
+      </a>
       <Button className="chat-new" onClick={newChat} disabled={busy}>
         <Plus /> Новий чат
       </Button>
@@ -330,9 +329,9 @@ export function ChatWorkspace() {
         >
           <Settings2 /> Контекст господарства
         </button>
-        <Link href="/account">
+        <a href="/account">
           <ShieldCheck /> Моя підписка
-        </Link>
+        </a>
         <button onClick={() => void logout()} disabled={busy}>
           <LogOut /> Вийти
         </button>
@@ -344,9 +343,9 @@ export function ChatWorkspace() {
     return (
       <main className="agro-workspace login-shell" lang="uk">
         <section className="login-card">
-          <Link href="/" className="chat-brand">
+          <a href="/" className="chat-brand">
             <Leaf /> CORE·AGRO
-          </Link>
+          </a>
           {phase === 'loading' ? (
             <>
               <LoaderCircle className="animate-spin" />
@@ -371,21 +370,21 @@ export function ChatWorkspace() {
                     ? 'Чати й контекст доступні з активною підпискою CORE AGRO. Після оплати активація може тривати близько хвилини.'
                     : error}
               </p>
-              <Link
+              <a
                 className="chat-primary"
-                href={phase === 'login' ? '/login' : '/pricing'}
+                href={phase === 'login' ? '/login?next=/chat' : '/pricing'}
               >
                 {phase === 'login' ? 'Увійти за email' : 'Переглянути тарифи'}
                 <ArrowUpRight />
-              </Link>
+              </a>
               {phase !== 'login' && (
                 <>
                   <Button className="chat-new" onClick={() => void load()}>
                     <RefreshCw /> Перевірити статус
                   </Button>
-                  <Link href="/login" className="chat-text-link">
+                  <a href="/login?next=/chat" className="chat-text-link">
                     Увійти з іншою поштою
-                  </Link>
+                  </a>
                 </>
               )}
             </>

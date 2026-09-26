@@ -1,6 +1,5 @@
 'use client';
 import { useState, type SubmitEvent } from 'react';
-import Link from 'next/link';
 import { ArrowRight, Leaf, LoaderCircle, Mail } from 'lucide-react';
 import {
   InputOTP,
@@ -56,9 +55,9 @@ export function LoginForm({ ready }: { ready: boolean }) {
   return (
     <main className="agro-workspace login-shell" lang="uk">
       <section className="login-card">
-        <Link href="/" className="chat-brand">
+        <a href="/" className="chat-brand">
           <Leaf /> CORE·AGRO
-        </Link>
+        </a>
         <div className="login-symbol">
           <Mail />
         </div>
@@ -146,9 +145,9 @@ export function LoginForm({ ready }: { ready: boolean }) {
             </Button>
           )}
         </form>
-        <Link href="/pricing" className="chat-text-link">
+        <a href="/pricing" className="chat-text-link">
           Ще немає підписки? Переглянути тарифи
-        </Link>
+        </a>
       </section>
     </main>
   );
