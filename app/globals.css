@@ -240,7 +240,7 @@ a:hover, button:hover { transform: translateY(-2px); }
 .cta-orbit { position: absolute; width: 760px; height: 240px; border: 1px solid rgba(184,238,55,.2); border-radius: 50%; transform: rotate(-12deg); box-shadow: 0 0 80px rgba(184,238,55,.07); animation: orbit 12s ease-in-out infinite alternate; }
 .footer { display: grid; gap: 1.5rem; align-items: center; padding-block: 3rem; color: rgba(255,255,255,.36); font-size: .75rem; }
 .footer-meta { display: grid; gap: .75rem; }
-.footer-links { display: flex; flex-wrap: wrap; gap: .6rem 1.1rem; }
+.footer-links { display: grid; gap: .65rem; justify-items: start; font-size: .875rem; line-height: 1.4; }
 .footer-links a { transition: color .2s ease; }
 .footer-links a:hover { color: #b8ee37; }
 .legal-copy p + p,.legal-copy ul + p,.legal-copy p + ul { margin-top: 1rem; }
@@ -280,7 +280,7 @@ a:hover, button:hover { transform: translateY(-2px); }
   .finance-flow, .process-grid { grid-template-columns: repeat(2,1fr); }
   .footer { grid-template-columns: 1fr auto minmax(250px,auto); }
   .footer-meta { justify-items: end; text-align: right; }
-  .footer-links { justify-content: flex-end; }
+  .footer-links { justify-items: end; }
 }
 @media (min-width: 1050px) {
   .finance-flow, .process-grid { grid-template-columns: repeat(4,1fr); }

@@ -2,38 +2,38 @@ import type { Metadata } from 'next';
 import { LegalDocument } from '@/components/legal/legal-document';
 
 export const metadata: Metadata = {
-  title: 'Refund Policy — CORE AGRO',
-  description: 'Refund and cancellation terms for CORE AGRO annual subscriptions purchased through Paddle.',
+  title: 'Правила повернення — CORE AGRO',
+  description: 'Порядок звернення щодо повернення коштів за онлайн-сервіс CORE AGRO.',
 };
 
 export default function RefundsPage() {
   return (
     <LegalDocument
-      language="en"
-      eyebrow="Terms and policies"
-      title="Refund policy"
-      summary="CORE AGRO plans are billed annually through Paddle. Here is how cancellations, refund requests and statutory rights work."
-      notice={<p>To request a refund or report a billing issue, use the support link in your Paddle receipt or visit <a href="https://paddle.net" rel="noopener noreferrer" target="_blank">paddle.net</a>. You may also email <a href="mailto:hello@core-agro.ai">hello@core-agro.ai</a> so we can help investigate.</p>}
+      language="uk"
+      eyebrow="Документи CORE AGRO"
+      title="Правила повернення"
+      summary="Як звернутися щодо повернення оплати, помилкового списання чи неактивованого доступу."
+      notice={<p>Для повернення або перевірки платежу напишіть на <a href="mailto:coreagro10@gmail.com">coreagro10@gmail.com</a>. Вкажіть ім’я, email, дату оплати та номер платежу, але не надсилайте повний номер банківської картки.</p>}
       sections={[
         {
-          id: 'billing', title: '1. Annual billing',
-          content: <><p>CORE BASIC, CORE BUSINESS and CORE MAX are annual subscriptions. Before payment, Paddle Checkout displays the final price, currency, taxes and renewal terms. The full annual amount is normally charged when you subscribe and again on each renewal unless you cancel in time.</p><p>Paddle is the merchant of record for purchases made through our checkout. Your receipt and invoice come from Paddle. CORE AGRO does not store your complete card details and cannot directly reverse a card charge outside Paddle’s payment process.</p></>,
+          id: 'grounds', title: '1. Підстави для звернення',
+          content: <p>Користувач має право звернутися із запитом на повернення коштів, якщо оплачена послуга не була надана, доступ до сервісу не був активований або технічні обставини унеможливили отримання оплаченої послуги. Також можна звернутися щодо технічної помилки під час оплати, подвійного списання чи іншого спірного платежу.</p>,
         },
         {
-          id: 'cancel', title: '2. Canceling renewal',
-          content: <><p>You can cancel automatic renewal at any time using the Paddle customer portal or the link in your purchase receipt. If you need help locating it, contact <a href="mailto:hello@core-agro.ai">hello@core-agro.ai</a>. Cancel before the next renewal date to prevent the next annual charge.</p><p>Canceling renewal normally keeps your paid access through the end of the current billing period. It does not automatically refund the current or any previous charge. Access may end sooner if a transaction is refunded, reversed or disputed.</p></>,
+          id: 'request', title: '2. Як подати запит',
+          content: <><p>Для оформлення повернення або скасування транзакції зверніться на <a href="mailto:coreagro10@gmail.com">coreagro10@gmail.com</a>. У зверненні зазначте ім’я користувача, email, дату оплати, номер платежу та короткий опис ситуації.</p><p>Якщо платіж проведено через Paddle, можна також скористатися посиланням підтримки в квитанції Paddle. Якщо платіж проведено через WayForPay, повідомте нам номер відповідного платежу. Ми перевіримо звернення з урахуванням умов платіжного провайдера.</p></>,
         },
         {
-          id: 'eligibility', title: '3. Refund eligibility',
-          content: <><p>We review requests for duplicate or incorrect charges, failure to receive access, and material service problems. Please contact us promptly with your order reference, account email and a description of the problem; do not send card numbers. We will investigate and work with Paddle on an appropriate remedy.</p><p>Except where applicable law or Paddle’s buyer terms require otherwise, annual subscription payments are not automatically refundable after purchase or renewal, and we do not promise a prorated refund for unused time. Eligible consumers may have statutory withdrawal or other refund rights depending on their location and the circumstances of purchase. Those rights are not limited by this policy.</p></>,
+          id: 'review', title: '3. Розгляд звернення',
+          content: <p>Заява на повернення коштів розглядається протягом 7 робочих днів з моменту її отримання. Якщо потрібні додаткові відомості для перевірки платежу, ми звернемося до користувача. Якщо підстав для повернення немає, користувач отримає відповідь із зазначенням причини відмови. Це не обмежує прав, передбачених застосовним законодавством.</p>,
         },
         {
-          id: 'request', title: '4. How to request a refund',
-          content: <><p>Start with the support link in your Paddle receipt or submit a request at <a href="https://paddle.net" rel="noopener noreferrer" target="_blank">paddle.net</a>. Paddle handles payment refunds as merchant of record. You may copy <a href="mailto:hello@core-agro.ai">hello@core-agro.ai</a> or contact us separately if your request concerns service access or functionality.</p><p>Include your order or transaction ID, the email used at checkout, the date of the charge and why you are requesting a refund. Paddle or CORE AGRO may ask for information reasonably needed to verify and resolve the request. Approval, method and timing of any refund depend on the applicable law, payment method and Paddle’s processing rules.</p></>,
+          id: 'amount', title: '4. Сума та спосіб повернення',
+          content: <><p>У разі погодження повернення кошти повертаються через платіжний сервіс на картку або інший спосіб оплати, з якого було здійснено платіж, якщо інший порядок не передбачено правилами провайдера чи законом.</p><p>Сума повернення може бути повною або частковою залежно від обсягу фактично наданої послуги, обставин звернення та вимог застосовного законодавства. Строк фактичного зарахування коштів залежить від платіжного провайдера та банку.</p></>,
         },
         {
-          id: 'chargebacks', title: '5. Disputes and chargebacks',
-          content: <><p>If a charge looks unfamiliar or incorrect, please contact Paddle or us first so it can be investigated quickly. You retain any right to dispute a transaction with your payment provider. A chargeback or refund may cause the corresponding subscription access to be suspended or ended after the transaction status is confirmed.</p><p>For additional buyer information, see <a href="https://www.paddle.com/legal/buyer-terms" rel="noopener noreferrer" target="_blank">Paddle’s Buyer Terms</a> and <a href="https://www.paddle.com/legal/refund-policy" rel="noopener noreferrer" target="_blank">Paddle’s Refund Policy</a>.</p></>,
+          id: 'renewal', title: '5. Скасування поновлення підписки',
+          content: <p>Скасування майбутнього поновлення підписки відрізняється від повернення вже сплачених коштів. Для підписки, оформленої через Paddle, керувати поновленням можна через клієнтський портал або посилання у квитанції. Якщо потрібна допомога, напишіть на <a href="mailto:coreagro10@gmail.com">coreagro10@gmail.com</a>. Скасування поновлення зазвичай залишає доступ до кінця оплаченого періоду, якщо інше не випливає зі статусу платежу чи закону.</p>,
         },
       ]}
     />

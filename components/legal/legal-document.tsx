@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { ArrowLeft, CalendarDays, FileText, Leaf, ShieldCheck } from 'lucide-react';
+import { FooterLinks } from './footer-links';
 
 interface LegalSection {
   id: string;
@@ -13,12 +14,13 @@ interface LegalDocumentProps {
   summary: string;
   sections: LegalSection[];
   notice?: ReactNode;
-  language?: 'ru' | 'en';
+  language?: 'ru' | 'en' | 'uk';
   updated?: string;
 }
 
 export function LegalDocument({ eyebrow, title, summary, sections, notice, language = 'ru', updated }: LegalDocumentProps) {
   const english = language === 'en';
+  const ukrainian = language === 'uk';
   return (
     <main lang={language} className="min-h-screen bg-[#061009] text-[#f5f8f3]">
       <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_72%_0%,rgba(184,238,55,.11),transparent_30%),linear-gradient(rgba(184,238,55,.022)_1px,transparent_1px),linear-gradient(90deg,rgba(184,238,55,.022)_1px,transparent_1px)] bg-[size:auto,72px_72px,72px_72px]" />
@@ -29,7 +31,7 @@ export function LegalDocument({ eyebrow, title, summary, sections, notice, langu
             <span className="logo-mark"><Leaf size={20} strokeWidth={1.8} /></span> CORE·AGRO
           </a>
           <a className="secondary-button min-h-11 px-4 text-xs" href="/">
-            <ArrowLeft size={20} strokeWidth={1.8} /> {english ? 'Back to home' : 'На главную'}
+            <ArrowLeft size={20} strokeWidth={1.8} /> {english ? 'Back to home' : ukrainian ? 'На головну' : 'На главную'}
           </a>
         </div>
       </header>
@@ -45,7 +47,7 @@ export function LegalDocument({ eyebrow, title, summary, sections, notice, langu
           <p className="mt-7 max-w-3xl text-base leading-8 text-white/56 md:text-lg">{summary}</p>
           <div className="mt-8 flex flex-wrap gap-3 text-xs text-white/42">
             <span className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[.025] px-4 py-2.5">
-              <CalendarDays size={20} strokeWidth={1.8} className="text-[#b8ee37]" /> {updated ?? (english ? 'Effective 25 September 2026' : 'Редакция от 19 сентября 2026 года')}
+              <CalendarDays size={20} strokeWidth={1.8} className="text-[#b8ee37]" /> {updated ?? (english ? 'Effective 25 September 2026' : ukrainian ? 'Редакція від 26 вересня 2026 року' : 'Редакция от 19 сентября 2026 года')}
             </span>
             <span className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[.025] px-4 py-2.5">
               <ShieldCheck size={20} strokeWidth={1.8} className="text-[#b8ee37]" /> CORE AGRO
@@ -61,8 +63,8 @@ export function LegalDocument({ eyebrow, title, summary, sections, notice, langu
 
         <div className="mt-14 grid gap-10 lg:grid-cols-[260px_minmax(0,1fr)] lg:gap-16">
           <aside className="lg:sticky lg:top-8 lg:self-start">
-            <p className="font-mono text-[11px] uppercase tracking-[.18em] text-[#b8ee37]/65">{english ? 'On this page' : 'Содержание'}</p>
-            <nav className="mt-5 grid gap-1" aria-label={english ? 'Document contents' : 'Содержание документа'}>
+            <p className="font-mono text-[11px] uppercase tracking-[.18em] text-[#b8ee37]/65">{english ? 'On this page' : ukrainian ? 'Зміст' : 'Содержание'}</p>
+            <nav className="mt-5 grid gap-1" aria-label={english ? 'Document contents' : ukrainian ? 'Зміст документа' : 'Содержание документа'}>
               {sections.map((section, index) => (
                 <a key={section.id} href={`#${section.id}`} className="group flex items-start gap-3 rounded-xl px-3 py-3 text-sm leading-5 text-white/44 transition hover:bg-white/[.035] hover:text-white">
                   <span className="font-mono text-[11px] text-[#b8ee37]/60">0{index + 1}</span>
@@ -88,14 +90,8 @@ export function LegalDocument({ eyebrow, title, summary, sections, notice, langu
 
       <footer className="relative z-10 border-t border-white/8">
         <div className="mx-auto flex max-w-[1280px] flex-col gap-4 px-5 py-8 text-xs text-white/35 sm:flex-row sm:items-center sm:justify-between lg:px-10">
-          <span>© 2026 CORE AGRO. {english ? 'All rights reserved.' : 'Все права защищены.'}</span>
-          <div className="flex flex-wrap gap-x-5 gap-y-2">
-            <a className="transition hover:text-[#b8ee37]" href="/terms">Terms of service</a>
-            <a className="transition hover:text-[#b8ee37]" href="/privacy">Privacy policy</a>
-            <a className="transition hover:text-[#b8ee37]" href="/refunds">Refund policy</a>
-            <a className="transition hover:text-[#b8ee37]" href="/project-declaration">{english ? 'Project declaration' : 'Декларация проекта'}</a>
-            <a className="transition hover:text-[#b8ee37]" href="/risk-disclosure">{english ? 'Risk disclosure' : 'Уведомление о рисках'}</a>
-          </div>
+          <span>© 2026 CORE AGRO. {english ? 'All rights reserved.' : ukrainian ? 'Усі права захищено.' : 'Все права защищены.'}</span>
+          <FooterLinks />
         </div>
       </footer>
     </main>

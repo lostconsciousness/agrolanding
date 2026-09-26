@@ -31,6 +31,7 @@ import {
   Zap,
 } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
+import { FooterLinks } from '@/components/legal/footer-links';
 
 type Locale = 'uk' | 'en' | 'pl' | 'kk' | 'de';
 
@@ -339,13 +340,7 @@ export default function Home() {
         <div className="brand flex items-center gap-3 font-semibold tracking-[0.16em]"><span className="logo-mark"><Leaf size={18} /></span> CORE·AGRO</div>
         <p>{t.footer}</p>
         <div className="footer-meta">
-          <nav className="footer-links" aria-label="Legal">
-            <a href="/terms">Terms of service</a>
-            <a href="/privacy">Privacy policy</a>
-            <a href="/refunds">Refund policy</a>
-            <a href="/project-declaration">Декларация проекта</a>
-            <a href="/risk-disclosure">Уведомление о рисках</a>
-          </nav>
+          <FooterLinks />
           <p>© 2026 CORE AGRO. {t.rights}</p>
         </div>
       </footer>
