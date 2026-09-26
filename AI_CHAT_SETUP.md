@@ -51,19 +51,22 @@ payments were made during local tests; provider responses in automated tests are
 
 ## Database and deployment
 
-Use the same D1 binding named `DB` for the web app and Paddle webhook. Secrets
-alone do not create this binding. A separate Cloudflare Worker deployment must
-have its own `DB` D1 binding configured and the migrations applied; the Sites
-project's automatic binding does not carry over to another Worker. It must contain
-the verified subscription/customer mirror, otherwise paid users will not have access.
+Use the same D1 binding named `DB` for the web app and Paddle webhook. The
+standalone `agrolanding` Worker binds to `db-core-agro` in `wrangler.jsonc`.
+The Cloudflare Vite plugin inherits that binding and includes it in the generated
+deployment config. The separate Sites publication has its own D1 resource.
 
-The existing migration `drizzle/0000_mature_crystal.sql` is unchanged. Apply the new,
-additive `drizzle/0001_pretty_wraith.sql` exactly once to the SAME production database.
-It creates users, auth challenges/sessions, conversations/messages and rate limits;
-it never deletes or changes Paddle entities or billing rows. Sites applies packaged
-migrations as part of deployment. For a separate Cloudflare Worker, apply through
-your migration workflow or the D1 console, then deploy the updated code and secrets.
-Do not re-run already-applied CREATE TABLE migrations.
+Sites applies the existing `drizzle/` migrations as part of its publication.
+For the separate Cloudflare Worker, set the Workers Builds **deploy command** to
+`npm run deploy` (not `npx wrangler deploy`). This runs
+`wrangler d1 migrations apply DB --remote` before deploying and records the applied
+version in D1. The idempotent `worker-migrations/0001_bootstrap.sql` creates only
+missing tables and indexes matching the Drizzle schema; it does not delete or
+overwrite customers, subscriptions, transactions, users or chats. Wrangler backs
+up the database before applying the migration. If the existing deployment command
+cannot be changed, run `npm run db:migrate:remote` from an authenticated Cloudflare
+build environment once, then redeploy. Do not run the non-idempotent `drizzle/0000`
+or `drizzle/0001` files directly on a database that may already have those tables.
 
 If a subscription is missing from the mirror, replay the relevant real Paddle
 notifications after ensuring the webhook uses that database. Do not fabricate a paid

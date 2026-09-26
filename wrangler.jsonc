@@ -10,6 +10,14 @@
   "assets": {
     "directory": "dist/client"
   },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "db-core-agro",
+      "database_id": "cb7c4e17-120f-403a-8cba-b55af6a4b385",
+      "migrations_dir": "worker-migrations"
+    }
+  ],
   "observability": {
     "enabled": true
   }
