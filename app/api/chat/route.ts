@@ -16,6 +16,7 @@ import {
 } from '@/lib/server/agro-ai';
 import { consumeLimit } from '@/lib/server/rate-limit';
 import { getRuntimeValue } from '@/lib/server/runtime-env';
+import { hashToken } from '@/lib/server/auth';
 
 export async function GET(request: Request) {
   try {
@@ -33,7 +34,8 @@ export async function GET(request: Request) {
       chats: await listChats(user.id),
       context: profile?.context ?? '',
       ready: aiConfigured(),
-      email: user.email,
+      email: user.email.startsWith('guest+') ? '' : user.email,
+      guest: user.email.startsWith('guest+'),
     });
   } catch (error) {
     return apiError(error);
@@ -111,6 +113,9 @@ export async function POST(request: Request) {
         ? Math.min(configuredLimit, 500)
         : 40;
     await consumeLimit(`chat:${user.id}`, limit, 86400);
+    const visitorIp = request.headers.get('cf-connecting-ip');
+    if (visitorIp)
+      await consumeLimit(`chat-ip:${await hashToken(visitorIp)}`, 100, 86400);
     const decision = await classifyQuestion(
       message,
       history.map(({ role, content }) => ({ role, content })),

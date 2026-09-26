@@ -2,10 +2,17 @@ import { getAuthenticatedUser } from './auth';
 import { getDatabase } from './database';
 import { HttpError } from './http';
 import { grantsTemporaryChatAccess } from './chat-test-access';
+import { getRuntimeValue } from './runtime-env';
+
+// Temporary launch mode. Set CHAT_FREE_ACCESS=false to restore subscription gating.
+export function freeChatEnabled() {
+  return getRuntimeValue('CHAT_FREE_ACCESS') !== 'false';
+}
 
 export async function requireChatUser(headers: Headers) {
   const user = await getAuthenticatedUser(headers);
   if (!user) throw new HttpError(401, 'Увійдіть до свого акаунта.');
+  if (freeChatEnabled()) return user;
   if (grantsTemporaryChatAccess(user.email)) return user;
   // Any current subscription qualifies; a more recently canceled one must not hide an active one.
   const paid = await getDatabase()

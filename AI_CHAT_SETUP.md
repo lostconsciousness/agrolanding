@@ -8,9 +8,11 @@
   HttpOnly cookies and same-origin checks for mutations. The email must match the
   email used in Paddle checkout. Signed-in users get their email prefilled; new
   customers can still purchase first and sign in from the welcome page afterward.
-- Every chat request verifies the current subscription mirror in D1. Existing
-  access policy is preserved: active, trialing and past_due grant access; paused
-  and canceled do not. Scheduled cancellation alone does not revoke access.
+- Temporary launch mode allows every visitor into the chat without a subscription
+  or email code. A guest gets an isolated, browser-cookie session and persistent
+  history in D1. Set `CHAT_FREE_ACCESS=false` to restore the normal subscription
+  check: active, trialing and past_due grant access; paused and canceled do not.
+  Scheduled cancellation alone does not revoke access.
 - A separate structured-output scope check rejects off-topic requests. The answer
   model has agriculture-specific instructions and an editable baseline reference
   at `lib/agro-knowledge.ts`. This is NOT fine-tuning. LLM scope checks reduce abuse
@@ -21,6 +23,8 @@
 - Default budget: 40 attempts per user per rolling 24h, one concurrent request,
   6,000 characters per prompt, 400 messages per conversation. Retries of successfully
   saved requests are idempotent. Provider errors do not save incomplete exchanges.
+  Public access additionally caps new guest sessions at 20 per IP per day and AI
+  requests at 100 per IP per day on Cloudflare. Set an OpenAI spend limit as well.
 
 ## Required server configuration
 
@@ -36,6 +40,7 @@ or a public NEXT_PUBLIC variable). For local development use `.env.local`.
 | `AUTH_FROM_EMAIL` | Sender on a domain verified in Resend, e.g. `CORE AGRO <login@core-agro.com>`. Verify the prescribed DNS records first. |
 | `AUTH_SECRET` | A private random value, at least 32 characters. Generate with `openssl rand -hex 32`. |
 | `AI_DAILY_MESSAGE_LIMIT` | Optional positive integer (default 40, maximum 500). Set a provider project spend limit too. |
+| `CHAT_FREE_ACCESS` | Optional temporary free-access switch. Enabled unless explicitly set to `false`; do not rely on billing protection until it is disabled. |
 | `OPENAI_AGRO_VECTOR_STORE_ID` | Optional OpenAI vector store containing your approved agricultural reference documents. |
 | `CHAT_TESTER_EMAIL` | Optional single verified tester email. Set only for an account whose mailbox you control. |
 | `CHAT_TESTER_UNTIL` | Required alongside `CHAT_TESTER_EMAIL`; UTC expiry such as `2026-10-03T00:00:00Z`. Once expired, the normal subscription check applies. |
@@ -46,7 +51,10 @@ payments were made during local tests; provider responses in automated tests are
 
 ## Database and deployment
 
-Use the same D1 binding named `DB` for the web app and Paddle webhook. It must contain
+Use the same D1 binding named `DB` for the web app and Paddle webhook. Secrets
+alone do not create this binding. A separate Cloudflare Worker deployment must
+have its own `DB` D1 binding configured and the migrations applied; the Sites
+project's automatic binding does not carry over to another Worker. It must contain
 the verified subscription/customer mirror, otherwise paid users will not have access.
 
 The existing migration `drizzle/0000_mature_crystal.sql` is unchanged. Apply the new,

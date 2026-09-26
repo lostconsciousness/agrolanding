@@ -8,7 +8,13 @@ import {
 } from '@/components/ui/input-otp';
 import { Button } from '@/components/ui/button';
 
-export function LoginForm({ ready }: { ready: boolean }) {
+export function LoginForm({
+  ready,
+  freeAccess,
+}: {
+  ready: boolean;
+  freeAccess: boolean;
+}) {
   const [email, setEmail] = useState('');
   const [code, setCode] = useState('');
   const [challenge, setChallenge] = useState('');
@@ -71,11 +77,22 @@ export function LoginForm({ ready }: { ready: boolean }) {
             ? `Введіть код, надісланий на ${email}. Він діє 10 хвилин.`
             : 'Увійдіть за email, який використовували для підписки. Надішлемо одноразовий код.'}
         </p>
-        {!ready && (
+        {!ready && !freeAccess && (
           <output className="chat-notice">
             Вхід готується до запуску. Зверніться до підтримки:
             hello@core-agro.ai.
           </output>
+        )}
+        {!ready && freeAccess && (
+          <output className="chat-notice">
+            Вхід за email ще налаштовується. Поки що чат відкритий без підписки
+            й без коду.
+          </output>
+        )}
+        {freeAccess && (
+          <a href="/chat" className="chat-primary">
+            Відкрити безкоштовний чат <ArrowRight />
+          </a>
         )}
         <form onSubmit={submit}>
           {challenge ? (

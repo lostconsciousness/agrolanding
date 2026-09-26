@@ -49,6 +49,7 @@ const DB = {
 };
 const env = {
   DB,
+  CHAT_FREE_ACCESS: 'false',
   AUTH_SECRET: 'test-only-secret-not-valid-in-production-12345',
   RESEND_API_KEY: 'test',
   AUTH_FROM_EMAIL: 'test@example.com',
@@ -154,6 +155,7 @@ const verify = load('app/api/auth/verify/route.ts');
 const context = load('app/api/chat/context/route.ts');
 const auth = load('lib/server/auth.ts');
 const logout = load('app/api/auth/logout/route.ts');
+const guest = load('app/api/auth/guest/route.ts');
 const origin = 'https://core-agro.test';
 function req(route, { body, cookie, method, extra = {} } = {}) {
   return new Request(origin + route, {
@@ -500,7 +502,35 @@ await status(
   200,
 );
 await status(await chat.GET(req('/api/chat', { cookie })), 401);
+env.CHAT_FREE_ACCESS = 'true';
+await status(
+  await guest.POST(req('/api/auth/guest', {
+    method: 'POST',
+    extra: { origin: 'https://evil.test' },
+  })),
+  403,
+);
+const guestSession = await status(
+  await guest.POST(req('/api/auth/guest', { method: 'POST' })),
+  200,
+);
+const guestCookie = guestSession.headers.get('set-cookie').split(';')[0];
+const guestProfile = await (
+  await status(await chat.GET(req('/api/chat', { cookie: guestCookie })), 200)
+).json();
+assert.equal(guestProfile.guest, true);
+assert.equal(guestProfile.email, '');
+assert.match(guestSession.headers.get('set-cookie'), /HttpOnly; SameSite=Lax.*Secure/);
+const guestMessage = await (
+  await status(await chat.POST(req('/api/chat', {
+    cookie: guestCookie,
+    body: { message: 'How to store wheat?', requestId: crypto.randomUUID() },
+    extra: { 'cf-connecting-ip': '203.0.113.9' },
+  })), 200)
+).json();
+assert.equal(guestMessage.messages.length, 2);
+assert.equal((await (await chat.GET(req('/api/chat', { cookie: guestCookie }))).json()).chats.length, 1);
 console.log(
-  `PASS: ${checks} handler checks; spoofed access rejected, OTP expiry/attempts/sessions, billing gates, CSRF, ownership, persistence, scope, sourced-only market answers, compressed memory, idempotency, failure recovery and budgets.`,
+  `PASS: ${checks} handler checks; guest free access, spoofed access rejected, OTP expiry/attempts/sessions, billing gates, CSRF, ownership, persistence, scope, sourced-only market answers, compressed memory, idempotency, failure recovery and budgets.`,
 );
 sqlite.close();

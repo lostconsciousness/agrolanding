@@ -43,6 +43,7 @@ interface ChatResponse {
   context: string;
   ready: boolean;
   email: string;
+  guest?: boolean;
   chatId: string;
 }
 async function responseData(response: Response): Promise<ChatResponse> {
@@ -111,7 +112,7 @@ const prompts = [
   },
 ];
 
-export function ChatWorkspace() {
+export function ChatWorkspace({ freeAccess }: { freeAccess: boolean }) {
   const [chats, setChats] = useState<ChatListItem[]>([]);
   const [selected, setSelected] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -125,6 +126,7 @@ export function ChatWorkspace() {
   >('loading');
   const [ready, setReady] = useState(false);
   const [email, setEmail] = useState('');
+  const [guest, setGuest] = useState(false);
   const [busy, setBusy] = useState(false);
   const [switching, setSwitching] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -140,7 +142,15 @@ export function ChatWorkspace() {
   } | null>(null);
   async function load() {
     try {
-      const res = await fetch('/api/chat', { cache: 'no-store' });
+      let res = await fetch('/api/chat', { cache: 'no-store' });
+      if (res.status === 401 && freeAccess) {
+        const guestResponse = await fetch('/api/auth/guest', { method: 'POST' });
+        if (!guestResponse.ok) {
+          const issue = (await guestResponse.json()) as { error?: string };
+          throw new Error(issue.error || 'Не вдалося відкрити гостьовий чат.');
+        }
+        res = await fetch('/api/chat', { cache: 'no-store' });
+      }
       const data = await responseData(res);
       if (res.status === 401) {
         setPhase('login');
@@ -156,6 +166,8 @@ export function ChatWorkspace() {
       setContextDraft(data.context);
       setReady(data.ready);
       setEmail(data.email);
+      setGuest(Boolean(data.guest));
+      setError('');
       setPhase('ready');
     } catch (err) {
       setError(
@@ -329,13 +341,15 @@ export function ChatWorkspace() {
         >
           <Settings2 /> Контекст господарства
         </button>
-        <a href="/account">
-          <ShieldCheck /> Моя підписка
-        </a>
+        {!guest && (
+          <a href="/account">
+            <ShieldCheck /> Моя підписка
+          </a>
+        )}
         <button onClick={() => void logout()} disabled={busy}>
           <LogOut /> Вийти
         </button>
-        <span>{email}</span>
+        <span>{guest ? 'Гостьовий доступ · історія в цьому браузері' : email}</span>
       </div>
     </>
   );
@@ -370,21 +384,25 @@ export function ChatWorkspace() {
                     ? 'Чати й контекст доступні з активною підпискою CORE AGRO. Після оплати активація може тривати близько хвилини.'
                     : error}
               </p>
-              <a
-                className="chat-primary"
-                href={phase === 'login' ? '/login?next=/chat' : '/pricing'}
-              >
-                {phase === 'login' ? 'Увійти за email' : 'Переглянути тарифи'}
-                <ArrowUpRight />
-              </a>
+              {phase !== 'error' && (
+                <a
+                  className="chat-primary"
+                  href={phase === 'login' ? '/login?next=/chat' : '/pricing'}
+                >
+                  {phase === 'login' ? 'Увійти за email' : 'Переглянути тарифи'}
+                  <ArrowUpRight />
+                </a>
+              )}
               {phase !== 'login' && (
                 <>
                   <Button className="chat-new" onClick={() => void load()}>
-                    <RefreshCw /> Перевірити статус
+                    <RefreshCw /> {phase === 'error' ? 'Спробувати знову' : 'Перевірити статус'}
                   </Button>
-                  <a href="/login?next=/chat" className="chat-text-link">
-                    Увійти з іншою поштою
-                  </a>
+                  {!freeAccess && (
+                    <a href="/login?next=/chat" className="chat-text-link">
+                      Увійти з іншою поштою
+                    </a>
+                  )}
                 </>
               )}
             </>
