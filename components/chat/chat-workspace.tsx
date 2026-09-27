@@ -4,7 +4,6 @@ import {
   useRef,
   useState,
   type SubmitEvent,
-  type ReactNode,
 } from 'react';
 import {
   ArrowUp,
@@ -35,6 +34,7 @@ import {
   SheetDescription,
 } from '@/components/ui/sheet';
 import type { ChatListItem, ChatMessage } from '@/lib/chat-types';
+import { MessageText, sourceHost } from './message-text';
 
 interface ChatResponse {
   error?: string;
@@ -48,46 +48,6 @@ interface ChatResponse {
 }
 async function responseData(response: Response): Promise<ChatResponse> {
   return (await response.json()) as ChatResponse;
-}
-function sourceHost(url: string) {
-  try {
-    const parsed = new URL(url);
-    return ['http:', 'https:'].includes(parsed.protocol)
-      ? parsed.hostname
-      : null;
-  } catch {
-    return null;
-  }
-}
-
-function MessageText({ message }: { message: ChatMessage }) {
-  const nodes: ReactNode[] = [];
-  let cursor = 0;
-  const refs = [...message.citations].sort((a, b) => a.start - b.start);
-  for (const [i, citation] of refs.entries()) {
-    if (
-      !sourceHost(citation.url) ||
-      citation.start < cursor ||
-      citation.end < citation.start ||
-      citation.end > message.content.length
-    )
-      continue;
-    nodes.push(message.content.slice(cursor, citation.start));
-    nodes.push(
-      <a
-        key={i}
-        href={citation.url}
-        target="_blank"
-        rel="noopener noreferrer"
-        title={citation.title}
-      >
-        [{i + 1}] {citation.title}
-      </a>,
-    );
-    cursor = citation.end;
-  }
-  nodes.push(message.content.slice(cursor));
-  return <div className="chat-message-text">{nodes}</div>;
 }
 const prompts = [
   {

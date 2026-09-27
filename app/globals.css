@@ -478,8 +478,26 @@ a:hover, button:hover { transform: translateY(-2px); }
 .chat-bubble.assistant { padding:12px 0; }
 .chat-author { display:flex; align-items:center; gap:10px; font-size:12px; color:#c6e5ad; font-weight:600; margin-bottom:12px; }
 .chat-author time { margin-left:auto; font-weight:400; color:#8a9b85; font-size:11px; }
-.chat-message-text,.chat-bubble>p { white-space:pre-wrap; line-height:1.85; font-size:16px; }
-.chat-message-text a { color:#b8ee77; text-decoration:underline; text-underline-offset:3px; }
+.chat-message-text,.chat-bubble>p { line-height:1.7; font-size:16px; }
+.chat-message-plain { white-space:pre-wrap; }
+.chat-message-text > :first-child { margin-top:0; }
+.chat-message-text > :last-child { margin-bottom:0; }
+.chat-message-text p { margin:0 0 .9em; }
+.chat-message-text h3,.chat-message-text h4 { margin:1.2em 0 .45em; font-weight:650; line-height:1.35; letter-spacing:-.015em; }
+.chat-message-text h3 { font-size:1.12em; }
+.chat-message-text h4 { font-size:1em; }
+.chat-message-text ul,.chat-message-text ol { margin:.4em 0 1em; padding-left:1.5em; }
+.chat-message-text li { padding-left:.15em; }
+.chat-message-text li + li { margin-top:.7em; }
+.chat-message-text li > :last-child { margin-bottom:0; }
+.chat-message-text li > p:first-child { margin-bottom:.4em; }
+.chat-message-text strong { color:#f4f9ed; font-weight:650; }
+.chat-message-text a { color:#b8ee77; text-decoration:underline; text-underline-offset:3px; overflow-wrap:anywhere; }
+.chat-message-text .chat-citation { display:inline; margin-left:.2em; white-space:nowrap; font-size:.78em; font-weight:650; text-decoration:none; vertical-align:super; }
+.chat-message-text code { padding:.1em .3em; border-radius:4px; background:#ffffff12; font-size:.9em; }
+.chat-message-text pre { max-width:100%; margin:.8em 0 1em; padding:1em; overflow-x:auto; border:1px solid #ffffff18; border-radius:10px; background:#0005; }
+.chat-message-text pre code { padding:0; background:none; font-size:.88em; }
+.chat-message-text blockquote { margin:1em 0; padding:.2em 0 .2em 1em; border-left:2px solid #b8ee77; color:#b9c9b0; }
 .chat-sources { display:flex; gap:8px; flex-wrap:wrap; margin-top:18px; }
 .chat-sources a { display:flex; align-items:center; gap:7px; padding:6px 10px; border-radius:8px; border:1px solid #ffffff15; color:#b9c9b0; font-size:12px; max-width:100%; overflow-wrap:anywhere; }
 .chat-sources svg { width:15px; height:15px; }

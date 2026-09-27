@@ -16,6 +16,10 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://core-agro-ai.prime-joy-8793.chatgpt.site'),
   title: 'CORE AGRO — AI-асистент агропідприємства',
   description: 'Продажі, техніка, команда, фінансування й гранти — в одному AI-асистенті.',
+  icons: {
+    icon: [{ url: '/favicon.svg', type: 'image/svg+xml', sizes: 'any' }],
+    shortcut: '/favicon.svg',
+  },
   openGraph: {
     title: 'CORE AGRO — AI для сильного господарства',
     description: 'Продажі. Техніка. Команда. Фінансування.',
