@@ -5,6 +5,7 @@
   "compatibility_date": "2026-05-15",
   "compatibility_flags": ["nodejs_compat"],
   "vars": {
+    "CHAT_FREE_ACCESS": "false",
     "AUTH_FROM_EMAIL": "login@core-agro.com",
     "NEXT_PUBLIC_PADDLE_ENVIRONMENT": "production",
     "OPENAI_MODEL": "gpt-4.1-mini"

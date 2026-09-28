@@ -5,6 +5,7 @@ import { getAuthenticatedUser } from '@/lib/server/auth';
 import { getBillingByEmail } from '@/lib/server/billing-store';
 import { subscriptionGrantsPaidAccess } from '@/lib/server/subscription-access';
 import { grantsTemporaryChatAccess } from '@/lib/server/chat-test-access';
+import { getTrialAccess, trialGrantsAccess } from '@/lib/server/trial-access';
 
 export const dynamic = 'force-dynamic';
 
@@ -22,7 +23,7 @@ export default async function AccountPage() {
   const requestHeaders = await headers();
   const user = await getAuthenticatedUser(requestHeaders);
 
-  if (!user) {
+  if (!user || user.email.startsWith('guest+')) {
     return (
       <main className="grid min-h-screen place-items-center bg-[#061009] px-5 text-[#f5f8f3]">
         <section className="max-w-lg rounded-[2rem] border border-amber-300/25 bg-amber-200/[.06] p-8 text-center">
@@ -38,7 +39,8 @@ export default async function AccountPage() {
   const { customer, subscriptions } = await getBillingByEmail(user.email);
   const currentSubscription = subscriptions.find(subscriptionGrantsPaidAccess) ?? subscriptions[0] ?? null;
   const isTester = grantsTemporaryChatAccess(user.email);
-  const hasAccess = subscriptionGrantsPaidAccess(currentSubscription) || isTester;
+  const trial = await getTrialAccess(user.id);
+  const hasAccess = subscriptionGrantsPaidAccess(currentSubscription) || isTester || trialGrantsAccess(trial);
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#061009] px-5 py-10 text-[#f5f8f3] md:py-16">
@@ -63,6 +65,8 @@ export default async function AccountPage() {
             </span>
           </div>
 
+          {trial && <div className="trial-account">Пробний план: CORE {trial.plan.toUpperCase()} · {trialGrantsAccess(trial) ? 'Активний' : 'Завершений'}<br />До {new Date(trial.expiresAt).toLocaleString('uk-UA', { timeZone: 'Europe/Kyiv' })} (Київ). Без автосписання.</div>}
+          {!trial && !hasAccess && <a className="trial-link" href="/start">Обрати план і тестувати безкоштовно 24 години</a>}
           {customer && currentSubscription ? (
             <div className="mt-8 grid gap-4 sm:grid-cols-2">
               <div className="rounded-2xl border border-white/10 bg-black/10 p-5">

@@ -1,4 +1,5 @@
 'use client';
+import { LaunchOffer, RegularPrice } from '@/components/pricing/launch-offer';
 
 import {
   ArrowRight,
@@ -221,11 +222,11 @@ export default function Home() {
               </select>
               <ChevronDown className="language-chevron" aria-hidden="true" />
             </label>
-            <a href="/chat" className="nav-demo hidden sm:inline-flex">{t.login}<ArrowUpRight size={20} /></a>
+            <a href="/start" className="nav-demo hidden sm:inline-flex">{t.login}<ArrowUpRight size={20} /></a>
             <button className="menu-button lg:hidden" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu" aria-expanded={menuOpen}>{menuOpen ? <X /> : <Menu />}</button>
           </div>
         </div>
-        {menuOpen && <nav className="mobile-nav lg:hidden">{['product', 'features', 'process', 'pricing'].map((id, i) => <a key={id} href={id === 'pricing' ? '/pricing' : `#${id}`} onClick={() => setMenuOpen(false)}>{t.nav[i]}<ArrowRight size={20} /></a>)}<a href="/chat">{t.login}<ArrowUpRight size={20} /></a></nav>}
+        {menuOpen && <nav className="mobile-nav lg:hidden">{['product', 'features', 'process', 'pricing'].map((id, i) => <a key={id} href={id === 'pricing' ? '/pricing' : `#${id}`} onClick={() => setMenuOpen(false)}>{t.nav[i]}<ArrowRight size={20} /></a>)}<a href="/start">{t.login}<ArrowUpRight size={20} /></a></nav>}
       </header>
 
       <section id="top" className="hero-section relative min-h-[920px] overflow-hidden">
@@ -321,7 +322,8 @@ export default function Home() {
       <section id="pricing" className="pricing-section py-36 md:py-52">
         <div className="section-shell">
           <Reveal><Kicker>{t.pricingKicker}</Kicker><h2 className="section-title max-w-5xl">{t.pricingTitle}</h2></Reveal>
-          <div className="pricing-grid mt-16">{t.plans.map(([name, price, desc, features], i) => <Reveal key={name as string} delay={i * 90}><article className={`price-card ${i === 1 ? 'featured' : ''}`}>{i === 1 && <div className="popular"><Sparkles size={13} />{t.popular}</div>}<span className="plan-index">0{i + 1}</span><h3>{name as string}</h3><p>{desc as string}</p><div className="price"><strong>{price as string}</strong><span>{t.perYear}</span></div><div className="plan-features">{(features as string[]).map((feature) => <div key={feature}><Check />{feature}</div>)}</div><a className={i === 1 ? 'primary-button' : 'secondary-button'} href="/pricing">{t.choose}<ArrowRight size={16} /></a></article></Reveal>)}</div>
+          <LaunchOffer />
+          <div className="pricing-grid mt-16">{t.plans.map(([name, price, desc, features], i) => <Reveal key={name as string} delay={i * 90}><article className={`price-card ${i === 1 ? 'featured' : ''}`}>{i === 1 && <div className="popular"><Sparkles size={13} />{t.popular}</div>}<span className="plan-index">0{i + 1}</span><h3>{name as string}</h3><p>{desc as string}</p><RegularPrice plan={(['basic','business','max'] as const)[i]} /><div className="price"><strong>{price as string}</strong><span>{t.perYear}</span></div><div className="plan-features">{(features as string[]).map((feature) => <div key={feature}><Check />{feature}</div>)}</div><a className={i === 1 ? 'primary-button' : 'secondary-button'} href="/pricing">{t.choose}<ArrowRight size={16} /></a><a className="trial-link" href={`/start?plan=${(['basic','business','max'] as const)[i]}`}>Тестувати безкоштовно 24 години</a></article></Reveal>)}</div>
         </div>
       </section>
 

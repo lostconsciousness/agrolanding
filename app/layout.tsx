@@ -1,4 +1,5 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
+import { PwaProvider } from '@/components/pwa-install';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 
@@ -13,12 +14,15 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://core-agro-ai.prime-joy-8793.chatgpt.site'),
+  metadataBase: new URL('https://core-agro.com'),
+  manifest: '/manifest.webmanifest',
+  appleWebApp: { capable: true, title: 'CORE AGRO', statusBarStyle: 'default' },
   title: 'CORE AGRO — AI-асистент агропідприємства',
   description: 'Продажі, техніка, команда, фінансування й гранти — в одному AI-асистенті.',
   icons: {
     icon: [{ url: '/favicon.svg', type: 'image/svg+xml', sizes: 'any' }],
     shortcut: '/favicon.svg',
+    apple: '/icons/apple-touch-icon.png',
   },
   openGraph: {
     title: 'CORE AGRO — AI для сильного господарства',
@@ -33,6 +37,8 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = { themeColor: '#061009' };
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -43,7 +49,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <PwaProvider>{children}</PwaProvider>
       </body>
     </html>
   );

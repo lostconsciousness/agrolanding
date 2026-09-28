@@ -35,6 +35,7 @@ import {
 } from '@/components/ui/sheet';
 import type { ChatListItem, ChatMessage } from '@/lib/chat-types';
 import { MessageText, sourceHost } from './message-text';
+import { PwaInstallButton } from '@/components/pwa-install';
 
 interface ChatResponse {
   error?: string;
@@ -339,17 +340,17 @@ export function ChatWorkspace({ freeAccess }: { freeAccess: boolean }) {
               </h1>
               <p>
                 {phase === 'login'
-                  ? 'Підтвердіть email вашої підписки, щоб відкрити чат та історію розмов.'
+                  ? 'Оберіть план і підтвердьте email, щоб тестувати чат безкоштовно 24 години та зберігати історію.'
                   : phase === 'paywall'
-                    ? 'Чати й контекст доступні з активною підпискою CORE AGRO. Після оплати активація може тривати близько хвилини.'
+                    ? 'Доступ відкривається на 24 години пробного тесту або з активною підпискою. Після завершення тесту чати залишаються збереженими.'
                     : error}
               </p>
               {phase !== 'error' && (
                 <a
                   className="chat-primary"
-                  href={phase === 'login' ? '/login?next=/chat' : '/pricing'}
+                  href="/start"
                 >
-                  {phase === 'login' ? 'Увійти за email' : 'Переглянути тарифи'}
+                  Обрати план або продовжити тест
                   <ArrowUpRight />
                 </a>
               )}
@@ -524,8 +525,8 @@ export function ChatWorkspace({ freeAccess }: { freeAccess: boolean }) {
             </div>
           )}
           <form className="chat-composer" onSubmit={send}>
-            <label className="sr-only" htmlFor="chat-input">
-              Ваше аграрне запитання
+            <label className="chat-input-label" htmlFor="chat-input">
+              Напишіть повідомлення
             </label>
             <Textarea
               id="chat-input"
@@ -558,6 +559,7 @@ export function ChatWorkspace({ freeAccess }: { freeAccess: boolean }) {
               </Button>
             </div>
           </form>
+          <PwaInstallButton />
           <p className="chat-footnote">
             Повідомлення та контекст передаються OpenAI для відповіді.
             Перевіряйте дату й умови цін у джерелах.

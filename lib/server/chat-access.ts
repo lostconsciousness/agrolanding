@@ -3,16 +3,18 @@ import { getDatabase } from './database';
 import { HttpError } from './http';
 import { grantsTemporaryChatAccess } from './chat-test-access';
 import { getRuntimeValue } from './runtime-env';
+import { getTrialAccess, trialGrantsAccess } from './trial-access';
 
-// Temporary launch mode. Set CHAT_FREE_ACCESS=false to restore subscription gating.
+// Legacy guest mode must be explicitly enabled. Normal launch uses verified trials.
 export function freeChatEnabled() {
-  return getRuntimeValue('CHAT_FREE_ACCESS') !== 'false';
+  return getRuntimeValue('CHAT_FREE_ACCESS') === 'true';
 }
 
 export async function requireChatUser(headers: Headers) {
   const user = await getAuthenticatedUser(headers);
   if (!user) throw new HttpError(401, 'Увійдіть до свого акаунта.');
   if (freeChatEnabled()) return user;
+  if (user.email.startsWith('guest+')) throw new HttpError(401, 'Підтвердьте email для пробного доступу.');
   if (grantsTemporaryChatAccess(user.email)) return user;
   // Any current subscription qualifies; a more recently canceled one must not hide an active one.
   const paid = await getDatabase()
@@ -20,10 +22,10 @@ export async function requireChatUser(headers: Headers) {
     WHERE c.email = ? AND s.status IN ('active', 'trialing', 'past_due') LIMIT 1`)
     .bind(user.email)
     .first();
-  if (!paid)
+  if (!paid && !trialGrantsAccess(await getTrialAccess(user.id)))
     throw new HttpError(
       402,
-      'Чат доступний після активації підписки. Якщо ви щойно оплатили, оновіть статус за хвилину.',
+      'Активуйте безкоштовний тест на 24 години або оберіть річну підписку. Якщо тест уже завершився, потрібна підписка.',
     );
   return user;
 }

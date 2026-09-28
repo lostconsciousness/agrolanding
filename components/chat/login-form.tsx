@@ -45,8 +45,11 @@ export function LoginForm({
         return;
       }
       const next = new URLSearchParams(window.location.search).get('next');
+      const plan = new URLSearchParams(window.location.search).get('plan');
       window.location.assign(
-        next === '/pricing' || next === '/account' ? next : '/chat',
+        next === '/start'
+          ? `/start${plan && ['basic', 'business', 'max'].includes(plan) ? `?plan=${plan}` : ''}`
+          : next === '/pricing' || next === '/account' ? next : '/chat',
       );
     } catch (err) {
       setError(
@@ -75,7 +78,7 @@ export function LoginForm({
         <p>
           {challenge
             ? `Введіть код, надісланий на ${email}. Він діє 10 хвилин.`
-            : 'Увійдіть за email, який використовували для підписки. Надішлемо одноразовий код.'}
+            : 'Підтвердьте email, щоб створити кабінет або увійти. Надішлемо одноразовий код; чати зберігатимуться у вашому акаунті.'}
         </p>
         {!ready && !freeAccess && (
           <output className="chat-notice">

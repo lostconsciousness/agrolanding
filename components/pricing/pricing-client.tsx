@@ -16,6 +16,7 @@ import { useEffect, useRef, useState } from 'react';
 import { usePaddlePrices } from '@/hooks/use-paddle-prices';
 import { pricingTiers, type Tier } from '@/lib/pricing-tiers';
 import { FooterLinks } from '@/components/legal/footer-links';
+import { LaunchOffer, RegularPrice } from './launch-offer';
 
 interface PricingClientProps {
   countryCode?: string;
@@ -165,6 +166,7 @@ export function PricingClient({ countryCode, customerEmail }: PricingClientProps
           </div>
         </div>
 
+        <LaunchOffer />
         {visibleError && (
           <div className="mx-auto mt-10 flex max-w-3xl items-start gap-3 rounded-2xl border border-amber-300/25 bg-amber-200/[.06] px-5 py-4 text-sm leading-6 text-amber-100" role="alert">
             <CircleAlert className="mt-0.5 shrink-0 text-amber-300" size={20} />
@@ -194,6 +196,7 @@ export function PricingClient({ countryCode, customerEmail }: PricingClientProps
                 <p className="mt-3 min-h-14 text-sm leading-6 text-white/45">{tier.description}</p>
 
                 <div className="mt-9 border-b border-white/10 pb-8">
+                  <RegularPrice plan={tier.id} />
                   <div className="flex min-h-16 items-end gap-2">
                     {pricesLoading && priceId ? (
                       <LoaderCircle className="mb-2 animate-spin text-[#b8ee37]" size={28} />
@@ -222,6 +225,7 @@ export function PricingClient({ countryCode, customerEmail }: PricingClientProps
                 >
                   {isOpening ? <><LoaderCircle className="animate-spin" size={19} /> Opening checkout</> : <>Subscribe <ArrowRight size={18} /></>}
                 </button>
+                <a className="trial-link" href={`/start?plan=${tier.id}`}>Тестувати безкоштовно 24 години</a>
               </article>
             );
           })}

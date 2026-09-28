@@ -156,6 +156,7 @@ const context = load('app/api/chat/context/route.ts');
 const auth = load('lib/server/auth.ts');
 const logout = load('app/api/auth/logout/route.ts');
 const guest = load('app/api/auth/guest/route.ts');
+const trialRoute = load('app/api/trial/route.ts');
 const origin = 'https://core-agro.test';
 function req(route, { body, cookie, method, extra = {} } = {}) {
   return new Request(origin + route, {
@@ -257,6 +258,18 @@ env.CHAT_TESTER_UNTIL = '2020-01-01T00:00:00Z';
 await status(await chat.GET(req('/api/chat', { cookie })), 402);
 delete env.CHAT_TESTER_EMAIL;
 delete env.CHAT_TESTER_UNTIL;
+await status(await trialRoute.POST(req('/api/trial', { body: { plan: 'basic' } })), 401);
+await status(await trialRoute.POST(req('/api/trial', { cookie, body: { plan: 'invalid' } })), 400);
+await status(await trialRoute.POST(req('/api/trial', { cookie, body: { plan: 'basic' }, extra: { origin: 'https://evil.test' } })), 403);
+const trialResult = await (await status(await trialRoute.POST(req('/api/trial', { cookie, body: { plan: 'business' } })), 200)).json();
+assert.equal(trialResult.trial.plan, 'business');
+assert.equal(trialResult.trial.expiresAt - trialResult.trial.startedAt, 86_400_000);
+await status(await chat.GET(req('/api/chat', { cookie })), 200);
+const repeatedTrial = await (await status(await trialRoute.POST(req('/api/trial', { cookie, body: { plan: 'max' } })), 200)).json();
+assert.deepEqual(repeatedTrial.trial, trialResult.trial);
+sqlite.prepare('UPDATE app_trials SET expires_at=? WHERE user_id=?').run(Date.now()-1, user.id);
+await status(await chat.GET(req('/api/chat', { cookie })), 402);
+await status(await trialRoute.POST(req('/api/trial', { cookie, body: { plan: 'basic' } })), 402);
 const attemptChallenge = await (
   await requestCode.POST(
     req('/api/auth/request-code', { body: { email: 'attempts@example.com' } }),

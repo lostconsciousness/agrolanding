@@ -17,6 +17,7 @@ import {
 import { consumeLimit } from '@/lib/server/rate-limit';
 import { getRuntimeValue } from '@/lib/server/runtime-env';
 import { hashToken } from '@/lib/server/auth';
+import { getTrialAccess } from '@/lib/server/trial-access';
 
 export async function GET(request: Request) {
   try {
@@ -36,6 +37,7 @@ export async function GET(request: Request) {
       ready: aiConfigured(),
       email: user.email.startsWith('guest+') ? '' : user.email,
       guest: user.email.startsWith('guest+'),
+      trial: await getTrialAccess(user.id),
     });
   } catch (error) {
     return apiError(error);

@@ -89,6 +89,12 @@ export const authCodes = sqliteTable('auth_codes', {
   attempts: integer('attempts').notNull().default(0),
   expiresAt: integer('expires_at').notNull(),
 });
+export const appTrials = sqliteTable('app_trials', {
+  userId: text('user_id').primaryKey().references(() => appUsers.id),
+  plan: text('plan', { enum: ['basic', 'business', 'max'] }).notNull(),
+  startedAt: integer('started_at').notNull(),
+  expiresAt: integer('expires_at').notNull(),
+});
 export const authSessions = sqliteTable('auth_sessions', {
   tokenHash: text('token_hash').primaryKey(),
   userId: text('user_id')
