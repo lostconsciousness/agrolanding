@@ -1,6 +1,5 @@
 'use client';
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
 import { ArrowRight, Check, Leaf, LoaderCircle, Mail, ShieldCheck } from 'lucide-react';
 import type { TrialAccess, TrialPlan } from '@/lib/server/trial-access';
 import { LaunchOffer, RegularPrice } from '@/components/pricing/launch-offer';
@@ -42,12 +41,13 @@ export function StartPlans({ email, trial, initialPlan, permanentAccess = false 
     }
   }
   return <main className="start-page agro-workspace" lang="uk">
-    <header><Link className="chat-brand" href="/"><Leaf /> CORE·AGRO</Link><Link href="/account">Мій кабінет</Link></header>
+    <header><a className="chat-brand" href="/"><Leaf /> CORE·AGRO</a><a href="/account">Мій кабінет</a></header>
     <section className="start-intro"><span className="start-kicker"><ShieldCheck size={22} /> 7 днів безкоштовно</span><h1>Оберіть план.<br /><span>Спробуйте на своїх задачах.</span></h1><p>Спочатку підтвердіть email — потім відкриється чат зі збереженими діалогами та контекстом. Без картки, оплати та автоматичного списання.</p>
       <p className="start-test-note">У тестовому режимі всі три плани відкривають один і той самий AI-чат. Інші можливості тарифів не активуються автоматично під час тесту.</p>
       {email && <p className="start-email"><Mail size={20} /> {email}</p>}
-      {permanentAccess && <Link className="chat-primary" href="/chat">Відкрити чат · безстроковий доступ <ArrowRight size={22} /></Link>}
-      {!permanentAccess && active && <Link className="chat-primary" href="/chat">Продовжити тест · до {new Date(trial.expiresAt).toLocaleString('uk-UA')} <ArrowRight size={22} /></Link>}
+      {/* Native navigation avoids the Vinext RSC router failure on this entry page. */}
+      {permanentAccess && <a className="chat-primary" href="/chat">Відкрити чат · безстроковий доступ <ArrowRight size={22} /></a>}
+      {!permanentAccess && active && <a className="chat-primary" href="/chat">Продовжити тест · до {new Date(trial.expiresAt).toLocaleString('uk-UA')} <ArrowRight size={22} /></a>}
       {!permanentAccess && trial && now !== null && !active && <p className="chat-notice">Ваш безкоштовний тиждень завершився. Діалоги збережені; річна підписка знову відкриє доступ.</p>}
     </section>
     <LaunchOffer />
@@ -56,7 +56,7 @@ export function StartPlans({ email, trial, initialPlan, permanentAccess = false 
       <span className="start-plan-label">{selected === plan.id ? 'Ваш вибір' : 'Річний план'}</span><h2>{plan.name}</h2><p>{plan.description}</p><RegularPrice plan={plan.id} /><div className="start-price">{plan.price}<small>/ рік · базова ціна USD</small></div>
       <ul>{plan.features.map(feature => <li key={feature}><Check size={20} strokeWidth={1.75} />{feature}</li>)}</ul>
       {!permanentAccess && !trial && <button className="chat-primary" disabled={busy !== null} onClick={() => void start(plan.id)}>{busy === plan.id ? <LoaderCircle className="animate-spin" /> : <ArrowRight size={22} />} {email ? 'Активувати безкоштовний тиждень' : 'Тестувати безкоштовно 7 днів'}</button>}
-      <Link className="start-subscribe" href="/pricing">Обрати річну підписку <ArrowRight size={20} /></Link>
+      <a className="start-subscribe" href="/pricing">Обрати річну підписку <ArrowRight size={20} /></a>
     </article>)}</div>
     <p className="start-fineprint">Один тест на підтверджений email. 7 днів починаються після активації, а не при відкритті сторінки. Для платного плану підсумкову суму показує Paddle перед оплатою.</p>
     <div className="start-install"><PwaInstallButton /></div>
