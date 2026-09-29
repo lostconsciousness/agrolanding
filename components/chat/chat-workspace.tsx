@@ -561,7 +561,6 @@ export function ChatWorkspace({ freeAccess }: { freeAccess: boolean }) {
           </form>
           <PwaInstallButton />
           <p className="chat-footnote">
-            Повідомлення та контекст передаються OpenAI для відповіді.
             Перевіряйте дату й умови цін у джерелах.
           </p>
         </div>
