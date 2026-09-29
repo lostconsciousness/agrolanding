@@ -225,7 +225,7 @@ export function PricingClient({ countryCode, customerEmail }: PricingClientProps
                 >
                   {isOpening ? <><LoaderCircle className="animate-spin" size={19} /> Opening checkout</> : <>Subscribe <ArrowRight size={18} /></>}
                 </button>
-                <a className="trial-link" href={`/start?plan=${tier.id}`}>Тестувати безкоштовно 24 години</a>
+                <a className="trial-link" href={`/start?plan=${tier.id}`}>Тестувати безкоштовно 7 днів</a>
               </article>
             );
           })}

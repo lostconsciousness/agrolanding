@@ -1,5 +1,11 @@
 import { getRuntimeValue } from './runtime-env';
 
+/** Explicit server-side entitlement; callers must authenticate the email first. */
+export function grantsPermanentChatAccess(email: string) {
+  const allowed = getRuntimeValue('CHAT_PERMANENT_EMAIL')?.trim().toLowerCase();
+  return Boolean(allowed && email.trim().toLowerCase() === allowed);
+}
+
 /** A short-lived, authenticated tester entitlement; never modifies Paddle state. */
 export function grantsTemporaryChatAccess(email: string) {
   const testerEmail = getRuntimeValue('CHAT_TESTER_EMAIL')?.trim().toLowerCase();

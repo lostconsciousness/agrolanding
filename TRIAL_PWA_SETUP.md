@@ -1,7 +1,16 @@
 # Trial access and installed chat
 
+`CHAT_PERMANENT_EMAIL` grants authenticated chat access without expiration or a
+Paddle subscription. The production value is `trutimofey@gmail.com`. Email OTP
+verification, history ownership and daily AI budgets still apply. This does not
+grant account administration or bypass authentication.
+
+Migration `0003_extend_chat_trials.sql` extends existing shorter trials to seven
+days from their original start, including expired one-day trials. It never
+shortens longer grants or resets the start date.
+
 `/start` shows BASIC, BUSINESS and MAX. A visitor must verify their email before
-activating one 24-hour trial. All trial tiers use the same AI chat. The selected
+activating one 7-day trial. All trial tiers use the same AI chat. The selected
 plan and fixed expiration are stored in `app_trials`. Activation is idempotent:
 changing plans or signing in again does not restart the trial. Paid subscriptions
 continue to grant access independently. Trials never create Paddle charges.
